@@ -57,6 +57,7 @@ export class PhotoComponent implements OnInit {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', speechApiUrl, true);
         xhr.setRequestHeader('content-type', 'image/png');
+        xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
         //xhr.setRequestHeader('Ocp-Apim-Subscription-Key', FACE_API_KEY);
 
         xhr.onreadystatechange = function () {//Call a function when the state changes.
