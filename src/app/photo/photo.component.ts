@@ -10,8 +10,8 @@ export class PhotoComponent implements OnInit {
   options = {
     audio: false,
     video: true,
-    width: 500,
-    height: 500
+    width: parent.innerWidth / 2,
+    height: parent.innerHeight / 2
   };
   /*video = <any>document.getElementsByTagName('video')[0];
   canvas = <any>document.getElementsByTagName('canvas')[0];*/
@@ -38,31 +38,44 @@ export class PhotoComponent implements OnInit {
       const rect = imageAge[0].faceRectangle;
       const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
       const ctx = vCanvas.getContext('2d');
-      vCanvas.width = video.videoWidth/1.33;
-      vCanvas.height = video.videoHeight/1.33;
+      //vCanvas.width = video.videoWidth / 1.33;
+      //vCanvas.height = video.videoHeight / 1.33;
       //console.log(canvas.getContext("2d").getImageData(0,0,480,640));
       //vCanvas.width = 500;
       //vCanvas.height = 500;
-      console.log(video.height+" "+video.videoHeight);
-      var top =(video.offsetTop+(video.height-video.videoHeight)/2)*1.33+"px";
+      console.log(<any>document.getElementById("age"));
+      console.log(video.height + " " + video.videoHeight);
+      var top = (video.offsetTop + (video.height - video.videoHeight)) + "px";
       console.log(top);
-      vCanvas.style.top = top;
-      vCanvas.style.left = video.offsetleft;
-      ctx.strokeStyle="#FF0000";
-      var resize = 4/3;
-      ctx.strokeRect(rect.left/resize, rect.top/resize, rect.width/resize, rect.height/resize);
+      //vCanvas.style.top = top;
+      //vCanvas.style.left = video.offsetleft;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = "#FF0000";
+      var resize = video.videoWidth/video.width;
+      ctx.strokeRect(rect.left / resize, rect.top / resize + video.width/5 , rect.width / resize, rect.height / resize);
 
     })
   }
 
   constructor() {
-    /*
-        if (this.video) {
-          console.log("video");
-          this.canvas.width = this.video.videoWidth;
-          this.canvas.height = this.video.videoHeight;
-          this.canvas.getContext('2d').drawImage(this.video, 0, 0);
-        }*/
+    /* setInterval(function () {
+       console.log("ciao");
+       this.options = {
+         audio: false,
+         video: true,
+         width: parent.innerWidth / 2,
+         height: parent.innerHeight / 2
+       };
+     }, 1000)*/
+  }
+
+  onResize() {
+    const video = <any>document.getElementsByTagName('video')[0];
+    const canvas = <any>document.getElementsByName('videoCanvas')[0];
+    video.height = parent.innerHeight /2;
+    video.width = parent.innerWidth /2;
+    canvas.height = parent.innerHeight /2;
+    canvas.width = parent.innerWidth /2;
   }
 
   getAgeFromImage(stream) {
