@@ -1,4 +1,5 @@
 <h1 id="age">{{age}}<h1>
+<canvas id="videoCanvas" name="videoCanvas"  class="fullsize"></canvas>
 <ng2-webcam [options]="options" [onSuccess]="onSuccess" [onError]="onError"></ng2-webcam>
-<canvas id="canvas" style="display:none;"></canvas>
+<canvas name="canvas" id="canvas" style="display:none;"></canvas>
 <button id="take" (click)="onClick()">Take a photo</button><br />

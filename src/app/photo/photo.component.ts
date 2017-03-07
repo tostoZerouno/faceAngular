@@ -23,14 +23,35 @@ export class PhotoComponent implements OnInit {
 
   onClick() {
     const video = <any>document.getElementsByTagName('video')[0];
-    const canvas = <any>document.getElementsByTagName('canvas')[0];
+    const canvas = <any>document.getElementsByName('canvas')[0];
+    console.log(video.height);
+    console.log(video.videoHeight);
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     //console.log(canvas.toDataURL('image/png'));
     var image = canvas.toDataURL('image/png');
+
     this.getAgeFromImage(image).then(imageAge => {
-      this.age = "Età rilevata: " + imageAge;
+      //console.log(imageAge);
+      this.age = "Età rilevata: " + imageAge[0].faceAttributes.age;
+      const rect = imageAge[0].faceRectangle;
+      const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
+      const ctx = vCanvas.getContext('2d');
+      vCanvas.width = video.videoWidth/1.33;
+      vCanvas.height = video.videoHeight/1.33;
+      //console.log(canvas.getContext("2d").getImageData(0,0,480,640));
+      //vCanvas.width = 500;
+      //vCanvas.height = 500;
+      console.log(video.height+" "+video.videoHeight);
+      var top =(video.offsetTop+(video.height-video.videoHeight)/2)*1.33+"px";
+      console.log(top);
+      vCanvas.style.top = top;
+      vCanvas.style.left = video.offsetleft;
+      ctx.strokeStyle="#FF0000";
+      var resize = 4/3;
+      ctx.strokeRect(rect.left/resize, rect.top/resize, rect.width/resize, rect.height/resize);
+
     })
   }
 
@@ -68,7 +89,9 @@ export class PhotoComponent implements OnInit {
         xhr.onreadystatechange = function () {//Call a function when the state changes.
           if (xhr.status == 200) {
             //console.log(JSON.parse(xhr.response));
-            resolve(JSON.parse(xhr.response)[0].faceAttributes.age);
+            console.log(xhr);
+            var resp = JSON.parse(xhr.response);
+            resolve(resp);
           } else {
             resolve(xhr.status);
           }
@@ -80,6 +103,7 @@ export class PhotoComponent implements OnInit {
   }
 
   dataURItoBlob(dataURI) {
+    //console.log(dataURI);
     var byteString = atob(dataURI.split(',')[1]);
     var ab = new ArrayBuffer(byteString.length);
     var ia = new Uint8Array(ab);

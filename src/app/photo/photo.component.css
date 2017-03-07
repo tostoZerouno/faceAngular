@@ -1,0 +1,6 @@
+.fullsize {
+  width: 500;
+  height: 500;
+  position: absolute;
+  z-index: 10;
+}
