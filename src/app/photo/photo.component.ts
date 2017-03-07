@@ -51,8 +51,8 @@ export class PhotoComponent implements OnInit {
       //vCanvas.style.left = video.offsetleft;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = "#FF0000";
-      var resize = video.videoWidth/video.width;
-      ctx.strokeRect(rect.left / resize, rect.top / resize + video.width/5 , rect.width / resize, rect.height / resize);
+      var resize = Math.min(video.videoWidth/video.width,video.videoHeight/video.height);
+      ctx.strokeRect(rect.left / resize, rect.top / resize , rect.width / resize, rect.height / resize);
 
     })
   }
@@ -72,10 +72,11 @@ export class PhotoComponent implements OnInit {
   onResize() {
     const video = <any>document.getElementsByTagName('video')[0];
     const canvas = <any>document.getElementsByName('videoCanvas')[0];
-    video.height = parent.innerHeight /2;
     video.width = parent.innerWidth /2;
-    canvas.height = parent.innerHeight /2;
-    canvas.width = parent.innerWidth /2;
+    video.height = video.width *3/4;
+    console.log(video.height+" "+parent.innerHeight);
+    canvas.height =  video.height;
+    canvas.width = video.width;
   }
 
   getAgeFromImage(stream) {
