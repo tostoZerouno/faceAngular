@@ -22,6 +22,7 @@ export class PhotoComponent implements OnInit {
   onError = (err) => { };
 
   onClick() {
+    this.onResize();
     const video = <any>document.getElementsByTagName('video')[0];
     const canvas = <any>document.getElementsByName('canvas')[0];
     console.log(video.height);
@@ -73,7 +74,8 @@ export class PhotoComponent implements OnInit {
     const video = <any>document.getElementsByTagName('video')[0];
     const canvas = <any>document.getElementsByName('videoCanvas')[0];
     video.width = parent.innerWidth /2;
-    video.height = video.width *3/4;
+    var ratio = video.videoHeight / video.videoWidth;
+    video.height = video.width *ratio;
     console.log(video.height+" "+parent.innerHeight);
     canvas.height =  video.height;
     canvas.width = video.width;
@@ -128,6 +130,7 @@ export class PhotoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.onResize;
   }
 
 }
