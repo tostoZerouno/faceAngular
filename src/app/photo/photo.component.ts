@@ -66,8 +66,8 @@ export class PhotoComponent implements OnInit {
           ctx.fillText(text,
             (rect.left + rect.width) / resize, (rect.top /*+ rect.height*/) / resize);
 
-          text = (facialHair.beard >= 0.5 ? " barba" : "") +
-            (facialHair.moustache >= 0.5 ? " baffi" : "");
+          text = (facialHair.beard >= 0.2 ? " barba" : "") +
+            (facialHair.moustache >= 0.2 ? " baffi" : "");
 
           ctx.fillText(text,
             (rect.left + rect.width) / resize, (rect.top + fs * 1.2) / resize);
