@@ -45,9 +45,9 @@ export class PhotoComponent implements OnInit {
         //console.log(imageAge);
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, vCanvas.width, vCanvas.height);
         ctx.strokeStyle = "#FF0000";
-        const fs = video.width / 30;
+        const fs = video.width / 20;
         ctx.font = fs + "px Georgia";
         ctx.fillStyle = "#FF0000";
         var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
@@ -93,7 +93,7 @@ export class PhotoComponent implements OnInit {
     //console.log(video.height + " " + parent.innerHeight);
     //console.log("ratio: " + ratio);
     canvas.height = video.height;
-    canvas.width = video.width;
+    canvas.width = video.width*2;
     //console.log(canvas.height + " " + video.height);
   }
 
