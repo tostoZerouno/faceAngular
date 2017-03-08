@@ -70,8 +70,10 @@ export class PhotoComponent implements OnInit {
     var ratio = video.videoHeight / video.videoWidth;
     video.height = video.width * ratio;
     console.log(video.height + " " + parent.innerHeight);
+    console.log("ratio: "+ratio);
     canvas.height = video.height;
     canvas.width = video.width;
+    console.log(canvas.height + " " + video.height);
   }
 
   getAgeFromImage(stream) {
