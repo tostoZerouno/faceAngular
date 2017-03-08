@@ -56,7 +56,8 @@ export class PhotoComponent implements OnInit {
           var age = element.faceAttributes.age;
           var smile = element.faceAttributes.smile;
           var facialHair = element.faceAttributes.facialHair;
-          console.log(facialHair);
+          var glasses = element.faceAttributes.glasses.toLowerCase();
+          //console.log(element.faceAttributes);
           const rect = element.faceRectangle;
           ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
           var text = age + " anni, " +
@@ -69,7 +70,24 @@ export class PhotoComponent implements OnInit {
             (facialHair.moustache >= 0.5 ? " baffi" : "");
 
           ctx.fillText(text,
-            (rect.left + rect.width) / resize, (rect.top +fs*1.2) / resize);
+            (rect.left + rect.width) / resize, (rect.top + fs * 1.2) / resize);
+
+          switch (glasses) {
+            case "noglasses":
+              text = "";
+              break;
+            case "readingglasses":
+              text = "Occhiali da lettura";
+              break;
+            case "sunglasses":
+              text = "Occhiali da sole";
+              break;
+            default:
+              text = "";
+          }
+
+          ctx.fillText(text,
+            (rect.left + rect.width) / resize, (rect.top + fs * 1.2*2) / resize);
 
         });
 
@@ -93,7 +111,7 @@ export class PhotoComponent implements OnInit {
     //console.log(video.height + " " + parent.innerHeight);
     //console.log("ratio: " + ratio);
     canvas.height = video.height;
-    canvas.width = video.width*2;
+    canvas.width = video.width * 2;
     //console.log(canvas.height + " " + video.height);
   }
 
