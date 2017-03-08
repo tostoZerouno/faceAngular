@@ -29,7 +29,7 @@ export class PhotoComponent implements OnInit {
 
   evaluateAge() {
     if (this.fermaticazzo === 1) {
-      console.log(this.fermaticazzo);
+      //console.log(this.fermaticazzo);
       const video = <any>document.getElementsByTagName('video')[0];
       const canvas = <any>document.getElementsByName('canvas')[0];
       //console.log(video.height);
@@ -87,11 +87,11 @@ export class PhotoComponent implements OnInit {
     video.width = parent.innerWidth / 2;
     var ratio = video.videoHeight / video.videoWidth;
     video.height = video.width * ratio;
-    console.log(video.height + " " + parent.innerHeight);
-    console.log("ratio: " + ratio);
+    //console.log(video.height + " " + parent.innerHeight);
+    //console.log("ratio: " + ratio);
     canvas.height = video.height;
     canvas.width = video.width;
-    console.log(canvas.height + " " + video.height);
+    //console.log(canvas.height + " " + video.height);
   }
 
   getAgeFromImage(stream) {
@@ -118,7 +118,7 @@ export class PhotoComponent implements OnInit {
         xhr.onreadystatechange = function () {//Call a function when the state changes.
           if (xhr.status == 200) {
             //console.log(JSON.parse(xhr.response));
-            console.log(xhr);
+            //console.log(xhr);
             var resp = JSON.parse(xhr.response);
             resolve(resp);
           } else {
