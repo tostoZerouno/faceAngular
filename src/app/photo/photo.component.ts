@@ -45,33 +45,36 @@ export class PhotoComponent implements OnInit {
         //console.log(imageAge);
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
-        //vCanvas.width = video.videoWidth / 1.33;
-        //vCanvas.height = video.videoHeight / 1.33;
-        //console.log(canvas.getContext("2d").getImageData(0,0,480,640));
-        //vCanvas.width = 500;
-        //vCanvas.height = 500;
-        //console.log(<any>document.getElementById("age"));
-        //console.log(video.height + " " + video.videoHeight);
-        //var top = (video.offsetTop + (video.height - video.videoHeight)) + "px";
-        //console.log(top);
-        //vCanvas.style.top = top;
-        //vCanvas.style.left = video.offsetleft;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = "#FF0000";
-        const fs = video.width / 20;
+        const fs = video.width / 30;
         ctx.font = fs + "px Georgia";
         ctx.fillStyle = "#FF0000";
         var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
         var arr = Object.keys(imageAge).map(function (key) { return imageAge[key]; });
         arr.forEach(function (element) {
           var age = element.faceAttributes.age;
+          var smile = element.faceAttributes.smile;
+          var facialHair = element.faceAttributes.facialHair;
+          console.log(facialHair);
           const rect = element.faceRectangle;
           ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
-          ctx.fillText(age + " anni",
+          var text = age + " anni, " +
+            (smile > 0.5 ? "felice" : "triste");
+
+          ctx.fillText(text,
             (rect.left + rect.width) / resize, (rect.top /*+ rect.height*/) / resize);
+
+          text = (facialHair.beard >= 0.5 ? " barba" : "") +
+            (facialHair.moustache >= 0.5 ? " baffi" : "");
+
+          ctx.fillText(text,
+            (rect.left + rect.width) / resize, (rect.top +fs*1.2) / resize);
+
         });
 
-        setTimeout(() => this.evaluateAge(), 1000);
+        setTimeout(() => this.evaluateAge(), 3000);
+        //this.evaluateAge();
       })
     }
   }
@@ -102,7 +105,7 @@ export class PhotoComponent implements OnInit {
           'https://westus.api.cognitive.microsoft.com/face/v1.0/detect?',
           'returnFaceId=true',
           'returnFaceLandmarks=false',
-          'returnFaceAttributes=age'
+          'returnFaceAttributes=age,smile,facialHair,glasses'
         ].join('&');
 
         //var formData = new FormData();
