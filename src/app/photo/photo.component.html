@@ -1,6 +1,6 @@
 <h1 id="age">{{age}}</h1>
 <div (window:resize)="onResize()"  (document:load)="onResize()">
-    <canvas id="videoCanvas" name="videoCanvas" class="videoCanvas"></canvas>
+    <canvas id="videoCanvas" name="videoCanvas" class="videoCanvas" (click)="onClick()"></canvas>
     <ng2-webcam [options]="options" [onSuccess]="onSuccess" [onError]="onError"></ng2-webcam>
 </div>
 <canvas name="canvas" id="canvas" style="display:none;"></canvas>

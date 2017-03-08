@@ -13,6 +13,7 @@ export class PhotoComponent implements OnInit {
     width: parent.innerWidth / 2,
     height: parent.innerHeight / 2
   };
+  fermaticazzo = 0;
 
   /*video = <any>document.getElementsByTagName('video')[0];
   canvas = <any>document.getElementsByTagName('canvas')[0];*/
@@ -21,46 +22,63 @@ export class PhotoComponent implements OnInit {
   }
 
   onSuccess = (stream: MediaStream) => {
-    setTimeout(() => this.onResize(),1000);
-   };
+    setTimeout(() => this.onResize(), 1000);
+  };
 
   onError = (err) => { };
 
+  evaluateAge() {
+    if (this.fermaticazzo === 1) {
+      console.log(this.fermaticazzo);
+      const video = <any>document.getElementsByTagName('video')[0];
+      const canvas = <any>document.getElementsByName('canvas')[0];
+      //console.log(video.height);
+      //console.log(video.videoHeight);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      //console.log(canvas.toDataURL('image/png'));
+      var image = canvas.toDataURL('image/png');
+
+      this.getAgeFromImage(image).then(imageAge => {
+        //console.log(imageAge);
+        this.age = "Età rilevata: " + imageAge[0].faceAttributes.age;
+        const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
+        const ctx = vCanvas.getContext('2d');
+        //vCanvas.width = video.videoWidth / 1.33;
+        //vCanvas.height = video.videoHeight / 1.33;
+        //console.log(canvas.getContext("2d").getImageData(0,0,480,640));
+        //vCanvas.width = 500;
+        //vCanvas.height = 500;
+        //console.log(<any>document.getElementById("age"));
+        //console.log(video.height + " " + video.videoHeight);
+        //var top = (video.offsetTop + (video.height - video.videoHeight)) + "px";
+        //console.log(top);
+        //vCanvas.style.top = top;
+        //vCanvas.style.left = video.offsetleft;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "#FF0000";
+        const fs = video.width / 20;
+        ctx.font = fs + "px Georgia";
+        ctx.fillStyle = "#FF0000";
+        var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
+        var arr = Object.keys(imageAge).map(function (key) { return imageAge[key]; });
+        arr.forEach(function (element) {
+          var age = element.faceAttributes.age;
+          const rect = element.faceRectangle;
+          ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
+          ctx.fillText(age + " anni",
+            (rect.left + rect.width) / resize, (rect.top /*+ rect.height*/) / resize);
+        });
+
+        setTimeout(() => this.evaluateAge(), 1000);
+      })
+    }
+  }
+
   onClick() {
-    this.onResize();
-    const video = <any>document.getElementsByTagName('video')[0];
-    const canvas = <any>document.getElementsByName('canvas')[0];
-    console.log(video.height);
-    console.log(video.videoHeight);
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    //console.log(canvas.toDataURL('image/png'));
-    var image = canvas.toDataURL('image/png');
-
-    this.getAgeFromImage(image).then(imageAge => {
-      //console.log(imageAge);
-      this.age = "Età rilevata: " + imageAge[0].faceAttributes.age;
-      const rect = imageAge[0].faceRectangle;
-      const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
-      const ctx = vCanvas.getContext('2d');
-      //vCanvas.width = video.videoWidth / 1.33;
-      //vCanvas.height = video.videoHeight / 1.33;
-      //console.log(canvas.getContext("2d").getImageData(0,0,480,640));
-      //vCanvas.width = 500;
-      //vCanvas.height = 500;
-      console.log(<any>document.getElementById("age"));
-      console.log(video.height + " " + video.videoHeight);
-      var top = (video.offsetTop + (video.height - video.videoHeight)) + "px";
-      console.log(top);
-      //vCanvas.style.top = top;
-      //vCanvas.style.left = video.offsetleft;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "#FF0000";
-      var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
-      ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
-
-    })
+    this.fermaticazzo = (this.fermaticazzo + 1) % 2;
+    this.evaluateAge();
   }
 
   onResize() {
@@ -70,7 +88,7 @@ export class PhotoComponent implements OnInit {
     var ratio = video.videoHeight / video.videoWidth;
     video.height = video.width * ratio;
     console.log(video.height + " " + parent.innerHeight);
-    console.log("ratio: "+ratio);
+    console.log("ratio: " + ratio);
     canvas.height = video.height;
     canvas.width = video.width;
     console.log(canvas.height + " " + video.height);
@@ -128,7 +146,7 @@ export class PhotoComponent implements OnInit {
     //this.onResize();
     //setTimeout(this.onResize(),2000);
     //console.log("oninit");
-   // this.photoReadyEvent.emit("load");
+    // this.photoReadyEvent.emit("load");
   }
 
 }
