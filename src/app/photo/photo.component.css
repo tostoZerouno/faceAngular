@@ -1,6 +1,14 @@
-.fullsize {
-  width: 500;
-  height: 500;
+div{
+  width:100%;
+}
+.videoCanvas {
+  width: 50%;
+  height: 50%;
   position: absolute;
   z-index: 10;
+}
+
+video{
+  width: 50%;
+  height:50%;
 }

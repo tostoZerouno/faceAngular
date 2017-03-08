@@ -13,11 +13,16 @@ export class PhotoComponent implements OnInit {
     width: parent.innerWidth / 2,
     height: parent.innerHeight / 2
   };
+
   /*video = <any>document.getElementsByTagName('video')[0];
   canvas = <any>document.getElementsByTagName('canvas')[0];*/
 
+  constructor() {
+  }
 
-  onSuccess = (stream: MediaStream) => { };
+  onSuccess = (stream: MediaStream) => {
+    setTimeout(() => this.onResize(),1000);
+   };
 
   onError = (err) => { };
 
@@ -52,32 +57,20 @@ export class PhotoComponent implements OnInit {
       //vCanvas.style.left = video.offsetleft;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.strokeStyle = "#FF0000";
-      var resize = Math.min(video.videoWidth/video.width,video.videoHeight/video.height);
-      ctx.strokeRect(rect.left / resize, rect.top / resize , rect.width / resize, rect.height / resize);
+      var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
+      ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
 
     })
-  }
-
-  constructor() {
-    /* setInterval(function () {
-       console.log("ciao");
-       this.options = {
-         audio: false,
-         video: true,
-         width: parent.innerWidth / 2,
-         height: parent.innerHeight / 2
-       };
-     }, 1000)*/
   }
 
   onResize() {
     const video = <any>document.getElementsByTagName('video')[0];
     const canvas = <any>document.getElementsByName('videoCanvas')[0];
-    video.width = parent.innerWidth /2;
+    video.width = parent.innerWidth / 2;
     var ratio = video.videoHeight / video.videoWidth;
-    video.height = video.width *ratio;
-    console.log(video.height+" "+parent.innerHeight);
-    canvas.height =  video.height;
+    video.height = video.width * ratio;
+    console.log(video.height + " " + parent.innerHeight);
+    canvas.height = video.height;
     canvas.width = video.width;
   }
 
@@ -130,7 +123,10 @@ export class PhotoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.onResize;
+    //this.onResize();
+    //setTimeout(this.onResize(),2000);
+    //console.log("oninit");
+   // this.photoReadyEvent.emit("load");
   }
 
 }
