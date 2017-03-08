@@ -28,6 +28,7 @@ export class PhotoComponent implements OnInit {
   onError = (err) => { };
 
   evaluateAge() {
+    this.age = this.fermaticazzo == 1 ? "Cercando..." : "In pausa";
     if (this.fermaticazzo === 1) {
       //console.log(this.fermaticazzo);
       const video = <any>document.getElementsByTagName('video')[0];
@@ -42,7 +43,6 @@ export class PhotoComponent implements OnInit {
 
       this.getAgeFromImage(image).then(imageAge => {
         //console.log(imageAge);
-        this.age = "Età rilevata: " + imageAge[0].faceAttributes.age;
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
         //vCanvas.width = video.videoWidth / 1.33;
