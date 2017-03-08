@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./photo.component.css']
 })
 export class PhotoComponent implements OnInit {
-  age = "età non rilevata";
+  age = "Clicca sull'immagine per cominciare (o per mettere in pausa)";
   options = {
     audio: false,
     video: true,
@@ -81,6 +81,7 @@ export class PhotoComponent implements OnInit {
               break;
             case "sunglasses":
               text = "Occhiali da sole";
+              //text="Spacciatore";
               break;
             default:
               text = "";
