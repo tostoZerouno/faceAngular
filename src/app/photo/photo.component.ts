@@ -14,25 +14,20 @@ export class PhotoComponent implements OnInit {
     height: parent.innerHeight / 2
   };
 
-
-
   fermaticazzo = 0;
-
-  /*video = <any>document.getElementsByTagName('video')[0];
-  canvas = <any>document.getElementsByTagName('canvas')[0];*/
 
   constructor() {
   }
 
   onSuccess = (stream: MediaStream) => {
-    setTimeout(() => this.onResize(), 1000);
+    setTimeout(() => this.onResize(), 400);
   };
 
   onError = (err) => { };
 
   evaluateAge() {
     this.age = this.fermaticazzo == 1 ? "Cercando..." : "In pausa";
-    if (this.fermaticazzo === 1) {
+    if (this.fermaticazzo == 1) {
       //console.log(this.fermaticazzo);
       const video = <any>document.getElementsByTagName('video')[0];
       const canvas = <any>document.getElementsByName('canvas')[0];
@@ -42,7 +37,7 @@ export class PhotoComponent implements OnInit {
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
       //console.log(canvas.toDataURL('image/png'));
-      var image = canvas.toDataURL('image/jpeg',0.5);
+      var image = canvas.toDataURL('image/jpeg', 0.5);
 
       this.getAgeFromImage(image).then(imageAge => {
         //console.log(imageAge);
@@ -79,21 +74,21 @@ export class PhotoComponent implements OnInit {
           //(smile > 0.5 ? "felice" : "triste");
 
           ctx.fillText(text, left, top);
-          top+=1.3*fs;
+          top += 1.3 * fs;
 
           var scores = element.scores;
 
           var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
           text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
 
-          ctx.fillText(emotionMapping[text],left,top);
-          top+=1.3*fs;
+          ctx.fillText(emotionMapping[text], left, top);
+          top += 1.3 * fs;
 
           text = (facialHair.beard >= 0.2 ? "barba " : "") +
             (facialHair.moustache >= 0.2 ? "baffi " : "");
 
-          ctx.fillText(text,left,top);
-          top+=1.3*fs;
+          ctx.fillText(text, left, top);
+          top += 1.3 * fs;
 
           switch (glasses) {
             case "noglasses":
@@ -110,7 +105,7 @@ export class PhotoComponent implements OnInit {
               text = "";
           }
 
-          ctx.fillText(text,left,top);
+          ctx.fillText(text, left, top);
           //top+=1.3*fs;
 
 
