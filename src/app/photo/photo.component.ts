@@ -7,23 +7,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PhotoComponent implements OnInit {
   age = "Clicca sull'immagine per cominciare (o per mettere in pausa)";
-  options = {
-    audio: false,
-    video: true,
-    width: parent.innerWidth / 2,
-    height: parent.innerHeight / 2
-  };
+  /* options = {
+     audio: false,
+     video: true,
+     width: parent.innerWidth / 2,
+     height: parent.innerHeight / 2
+   };*/
 
   fermaticazzo = 0;
 
   constructor() {
   }
 
-  onSuccess = (stream: MediaStream) => {
+  /*onSuccess = (stream: MediaStream) => {
     setTimeout(() => this.onResize(), 400);
   };
 
-  onError = (err) => { };
+  onError = (err) => { };*/
 
   evaluateAge() {
     this.age = this.fermaticazzo == 1 ? "Cercando..." : "In pausa";
@@ -37,7 +37,7 @@ export class PhotoComponent implements OnInit {
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
       //console.log(canvas.toDataURL('image/png'));
-      var image = canvas.toDataURL('image/jpeg', 0.5);
+      var image = canvas.toDataURL('image/jpeg', 0.3);
 
       this.getAgeFromImage(image).then(imageAge => {
         //console.log(imageAge);
@@ -231,10 +231,17 @@ export class PhotoComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.onResize();
-    //setTimeout(this.onResize(),2000);
-    //console.log("oninit");
-    // this.photoReadyEvent.emit("load");
+    var interval = setInterval(() => {
+      this.onResize()
+      const video = <any>document.getElementsByTagName('video')[0];
+      console.log("gira");
+      //console.log(video);
+      if (video.height > 0) {
+        clearInterval(interval);
+        console.log("stop");
+      }
+    }, 100);
+
   }
 
   addEmotionToFace(faces, emotions) {
