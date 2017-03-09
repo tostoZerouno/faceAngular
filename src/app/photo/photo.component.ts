@@ -42,7 +42,7 @@ export class PhotoComponent implements OnInit {
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
       //console.log(canvas.toDataURL('image/png'));
-      var image = canvas.toDataURL('image/png');
+      var image = canvas.toDataURL('image/jpeg',0.5);
 
       this.getAgeFromImage(image).then(imageAge => {
         //console.log(imageAge);
@@ -89,8 +89,8 @@ export class PhotoComponent implements OnInit {
           ctx.fillText(emotionMapping[text],left,top);
           top+=1.3*fs;
 
-          text = (facialHair.beard >= 0.2 ? "barba" : "") +
-            (facialHair.moustache >= 0.2 ? "baffi" : "");
+          text = (facialHair.beard >= 0.2 ? "barba " : "") +
+            (facialHair.moustache >= 0.2 ? "baffi " : "");
 
           ctx.fillText(text,left,top);
           top+=1.3*fs;
