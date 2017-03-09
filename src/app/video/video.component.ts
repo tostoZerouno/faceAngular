@@ -8,7 +8,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 export class VideoComponent implements OnInit {
   videoSelect = (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]);
-
+  vid="";
 
   constructor() {
     /*this.videoSelect.onselect = function(){
@@ -18,6 +18,7 @@ export class VideoComponent implements OnInit {
 
    selecSource(){
      this.ngAfterViewInit();
+     this.vid= (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]).value;
    }
 
   @ViewChild('video') video: any;
