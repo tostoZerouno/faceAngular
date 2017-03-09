@@ -13,6 +13,9 @@ export class PhotoComponent implements OnInit {
     width: parent.innerWidth / 2,
     height: parent.innerHeight / 2
   };
+
+
+
   fermaticazzo = 0;
 
   /*video = <any>document.getElementsByTagName('video')[0];
@@ -57,24 +60,44 @@ export class PhotoComponent implements OnInit {
           var smile = element.faceAttributes.smile;
           var facialHair = element.faceAttributes.facialHair;
           var glasses = element.faceAttributes.glasses.toLowerCase();
+          const emotionMapping = {
+            "anger": "arrabbiato",
+            "contempt": "contento",
+            "disgust": "disgustato",
+            "fear": "spaventato",
+            "happiness": "felice",
+            "neutral": "neutro",
+            "sadness": "triste",
+            "surprise": "sorpreso"
+          }
           //console.log(element.faceAttributes);
           const rect = element.faceRectangle;
+          const left = (rect.left + rect.width) / resize;
+          var top = (rect.top /*+ rect.height*/) / resize;
           ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
-          var text = age + " anni, " +
-            (smile > 0.5 ? "felice" : "triste");
+          var text = age + " anni, ";// +
+          //(smile > 0.5 ? "felice" : "triste");
 
-          ctx.fillText(text,
-            (rect.left + rect.width) / resize, (rect.top /*+ rect.height*/) / resize);
+          ctx.fillText(text, left, top);
+          top+=1.3*fs;
 
-          text = (facialHair.beard >= 0.2 ? " barba" : "") +
-            (facialHair.moustache >= 0.2 ? " baffi" : "");
+          var scores = element.scores;
 
-          ctx.fillText(text,
-            (rect.left + rect.width) / resize, (rect.top + fs * 1.2) / resize);
+          var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
+          text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
+
+          ctx.fillText(emotionMapping[text],left,top);
+          top+=1.3*fs;
+
+          text = (facialHair.beard >= 0.2 ? "barba" : "") +
+            (facialHair.moustache >= 0.2 ? "baffi" : "");
+
+          ctx.fillText(text,left,top);
+          top+=1.3*fs;
 
           switch (glasses) {
             case "noglasses":
-              text = "";
+              text = "Non porti gli occhiali";
               break;
             case "readingglasses":
               text = "Occhiali da lettura";
@@ -87,8 +110,9 @@ export class PhotoComponent implements OnInit {
               text = "";
           }
 
-          ctx.fillText(text,
-            (rect.left + rect.width) / resize, (rect.top + fs * 1.2*2) / resize);
+          ctx.fillText(text,left,top);
+          //top+=1.3*fs;
+
 
         });
 
@@ -117,39 +141,86 @@ export class PhotoComponent implements OnInit {
   }
 
   getAgeFromImage(stream) {
+    var face = false;
+    var emotion = false;
+    var blob = this.dataURItoBlob(stream);
+    var finalresponse;
+    var comp = this;
     return new Promise(
       (resolve, reject) => {
-        const speechApiUrl = [
-          //'https://faceage.herokuapp.com/age?',
+        const faceApiUrl = [
           'https://westus.api.cognitive.microsoft.com/face/v1.0/detect?',
           'returnFaceId=true',
           'returnFaceLandmarks=false',
           'returnFaceAttributes=age,smile,facialHair,glasses'
         ].join('&');
 
+        const emotionApiUrl = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?';
+
         //var formData = new FormData();
         //formData.append("file", dataURItoBlob(stream));
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', speechApiUrl, true);
+        var xhrface = new XMLHttpRequest();
+        xhrface.open('POST', faceApiUrl, true);
         //xhr.setRequestHeader('content-type', 'image/png');
-        xhr.setRequestHeader('content-type', 'application/octet-stream');
+        xhrface.setRequestHeader('content-type', 'application/octet-stream');
         //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
-        xhr.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
+        xhrface.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
 
-        xhr.onreadystatechange = function () {//Call a function when the state changes.
-          if (xhr.status == 200) {
+
+        xhrface.onreadystatechange = function () {//Call a function when the state changes.
+          if (xhrface.status == 200) {
             //console.log(JSON.parse(xhr.response));
             //console.log(xhr);
-            var resp = JSON.parse(xhr.response);
-            resolve(resp);
+            var resp = JSON.parse(xhrface.response);
+            //console.log("face " + face + " " + emotion);
+            //console.log(resp);
+            face = true;
+            //resolve(resp);
+            if (emotion) {
+              finalresponse = comp.addFaceToEmotion(finalresponse, resp);
+              resolve(finalresponse);
+            } else {
+              finalresponse = resp;
+            }
           } else {
-            resolve(xhr.status);
+            resolve(xhrface.status);
           }
         }
         //console.log(this.dataURItoBlob(stream));
-        xhr.send(this.dataURItoBlob(stream));
+        xhrface.send(blob);
+
+        var xhremotion = new XMLHttpRequest();
+
+        xhremotion.open('POST', emotionApiUrl, true);
+        //xhr.setRequestHeader('content-type', 'image/png');
+        xhremotion.setRequestHeader('content-type', 'application/octet-stream');
+        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+        xhremotion.setRequestHeader('Ocp-Apim-Subscription-Key', "81f079954302459e904d8c98d06263b1");
+
+        xhremotion.onreadystatechange = function () {//Call a function when the state changes.
+          if (xhremotion.status == 200) {
+            //console.log(JSON.parse(xhr.response));
+            //console.log(xhr);
+            var resp = JSON.parse(xhremotion.response);
+            //console.log("emotion " + face + " " + emotion);
+            //console.log(resp);
+            emotion = true;
+            if (face) {
+              finalresponse = comp.addEmotionToFace(finalresponse, resp);
+              resolve(finalresponse);
+            } else {
+              finalresponse = resp;
+            }
+            //resolve(resp);
+          } else {
+            resolve(xhremotion.status);
+          }
+        }
+        //console.log(this.dataURItoBlob(stream));
+        xhremotion.send(this.dataURItoBlob(stream));
         // resolve(32);
+
       });
   }
 
@@ -169,6 +240,34 @@ export class PhotoComponent implements OnInit {
     //setTimeout(this.onResize(),2000);
     //console.log("oninit");
     // this.photoReadyEvent.emit("load");
+  }
+
+  addEmotionToFace(faces, emotions) {
+    var final = faces;
+    var arrF = Object.keys(faces).map(function (key) { return faces[key]; });
+
+    arrF.forEach(function (face) {
+      var top = face.faceRectangle.top;
+      var left = face.faceRectangle.left;
+      var min = 10000;
+      var arrE = Object.keys(emotions).map(function (key) { return emotions[key]; });
+      arrE.forEach(function (emotion) {
+        var topE = emotion.faceRectangle.top;
+        var leftE = emotion.faceRectangle.left;
+        var dist = Math.sqrt(Math.pow(top - topE, 2) + Math.pow(left - leftE, 2));
+        if (dist < min) {
+          face.scores = emotion.scores;
+        }
+
+      });
+      //console.log(final);
+    });
+
+    return final;
+  }
+  addFaceToEmotion(emotions, faces) {
+    var final = this.addEmotionToFace(faces, emotions);
+    return final;
   }
 
 }
