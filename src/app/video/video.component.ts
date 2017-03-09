@@ -7,8 +7,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 
 export class VideoComponent implements OnInit {
+  videoSelect = (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]);
 
-  constructor() { }
+
+  constructor() {
+    /*this.videoSelect.onselect = function(){
+      console.log(this);
+    }*/
+   }
+
+   selecSource(){
+     this.ngAfterViewInit();
+   }
 
   @ViewChild('video') video: any;
   // note that "#video" is the name of the template variable in the video element
