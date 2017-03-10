@@ -6,11 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./photo.component.css']
 })
 export class PhotoComponent implements OnInit {
-  age = "Clicca sull'immagine per cominciare (o per mettere in pausa)";
+  age = "Clicca sull'immagine per cominciare";
   description = ["no description"];
 
-  fermaticazzo = 0;
-
+  //fermaticazzo = 0;
+  fermaticazzo = false;
   constructor() {
   }
 
@@ -48,8 +48,8 @@ export class PhotoComponent implements OnInit {
   }
 
   evaluateAge() {
-    this.age = this.fermaticazzo == 1 ? "Cercando..." : "In pausa";
-    if (this.fermaticazzo == 1) {
+    this.age = this.fermaticazzo  ? "Cercando...(clicca sull'immagine per mettere in pausa)" : "In pausa(clicca sull'immagine per ricominciare)";
+    if (this.fermaticazzo ) {
       //console.log(this.fermaticazzo);
       const video = <any>document.getElementsByTagName('video')[0];
       const canvas = <any>document.getElementsByName('canvas')[0];
@@ -141,7 +141,7 @@ export class PhotoComponent implements OnInit {
   }
 
   onClick() {
-    this.fermaticazzo = (this.fermaticazzo + 1) % 2;
+    this.fermaticazzo = !(this.fermaticazzo);
     this.evaluateAge();
   }
 
@@ -176,26 +176,17 @@ export class PhotoComponent implements OnInit {
 
         const emotionApiUrl = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?';
 
-        //var formData = new FormData();
-        //formData.append("file", dataURItoBlob(stream));
-
         var xhrface = new XMLHttpRequest();
         xhrface.open('POST', faceApiUrl, true);
         //xhr.setRequestHeader('content-type', 'image/png');
         xhrface.setRequestHeader('content-type', 'application/octet-stream');
-        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
         xhrface.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
 
 
         xhrface.onreadystatechange = function () {//Call a function when the state changes.
           if (xhrface.status == 200) {
-            //console.log(JSON.parse(xhr.response));
-            //console.log(xhr);
             var resp = JSON.parse(xhrface.response);
-            //console.log("face " + face + " " + emotion);
-            //console.log(resp);
             face = true;
-            //resolve(resp);
             if (emotion) {
               finalresponse = comp.addFaceToEmotion(finalresponse, resp);
               resolve(finalresponse);
@@ -206,24 +197,17 @@ export class PhotoComponent implements OnInit {
             resolve(xhrface.status);
           }
         }
-        //console.log(this.dataURItoBlob(stream));
         xhrface.send(blob);
 
         var xhremotion = new XMLHttpRequest();
 
         xhremotion.open('POST', emotionApiUrl, true);
-        //xhr.setRequestHeader('content-type', 'image/png');
         xhremotion.setRequestHeader('content-type', 'application/octet-stream');
-        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
         xhremotion.setRequestHeader('Ocp-Apim-Subscription-Key', "81f079954302459e904d8c98d06263b1");
 
-        xhremotion.onreadystatechange = function () {//Call a function when the state changes.
+        xhremotion.onreadystatechange = function () {
           if (xhremotion.status == 200) {
-            //console.log(JSON.parse(xhr.response));
-            //console.log(xhr);
             var resp = JSON.parse(xhremotion.response);
-            //console.log("emotion " + face + " " + emotion);
-            //console.log(resp);
             emotion = true;
             if (face) {
               finalresponse = comp.addEmotionToFace(finalresponse, resp);
@@ -231,20 +215,15 @@ export class PhotoComponent implements OnInit {
             } else {
               finalresponse = resp;
             }
-            //resolve(resp);
           } else {
             resolve(xhremotion.status);
           }
         }
-        //console.log(this.dataURItoBlob(stream));
         xhremotion.send(this.dataURItoBlob(stream));
-        // resolve(32);
-
       });
   }
 
   dataURItoBlob(dataURI) {
-    //console.log(dataURI);
     var byteString = atob(dataURI.split(',')[1]);
     var ab = new ArrayBuffer(byteString.length);
     var ia = new Uint8Array(ab);
@@ -259,7 +238,6 @@ export class PhotoComponent implements OnInit {
       this.onResize()
       const video = <any>document.getElementsByTagName('video')[0];
       console.log("gira");
-      //console.log(video);
       if (video.height > 0) {
         clearInterval(interval);
         console.log("stop");
@@ -286,7 +264,6 @@ export class PhotoComponent implements OnInit {
         }
 
       });
-      //console.log(final);
     });
 
     return final;
@@ -294,6 +271,18 @@ export class PhotoComponent implements OnInit {
   addFaceToEmotion(emotions, faces) {
     var final = this.addEmotionToFace(faces, emotions);
     return final;
+  }
+
+  videoButtonClick(event){
+    this.clearCanvas();
+    console.log(event);
+    if(event=="stop"){
+      this.fermaticazzo=false;
+    }/*else{
+      this.fermaticazzo=true;
+      this.evaluateAge();
+    }*/
+
   }
 
   clearCanvas() {

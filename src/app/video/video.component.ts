@@ -55,13 +55,15 @@ export class VideoComponent implements OnInit {
     if (!_video.paused){
         this.stopStream();
         this.bottone = "Avvia il Video";
+        this.stop.emit("stop");
     }else{
       this.startStream(constraints);
       this.bottone = "Ferma il Video";
+      this.stop.emit("start");
     }
     
     //this.startStream(constraints);
-    this.stop.emit("stopping video");
+    
   }
 
   startStream(constraints) {
