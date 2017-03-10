@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-video',
@@ -7,6 +7,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 
 export class VideoComponent implements OnInit {
+
+ @Output() stop: EventEmitter<string> = new EventEmitter<string>();
+
   videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
   vid;
   localstream;
@@ -58,6 +61,7 @@ export class VideoComponent implements OnInit {
     }
     
     //this.startStream(constraints);
+    this.stop.emit("stopping video");
   }
 
   startStream(constraints) {

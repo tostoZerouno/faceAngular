@@ -8,42 +8,42 @@ import { Component, OnInit } from '@angular/core';
 export class PhotoComponent implements OnInit {
   age = "Clicca sull'immagine per cominciare (o per mettere in pausa)";
   description = ["no description"];
- 
+
   fermaticazzo = 0;
 
   constructor() {
   }
 
-  computerVision(blob){
-    
+  computerVision(blob) {
+
     const visionApiUrl = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description';
 
-        let p = this.description;
-        //var formData = new FormData();
-        //formData.append("file", dataURItoBlob(stream));
+    let p = this.description;
+    //var formData = new FormData();
+    //formData.append("file", dataURItoBlob(stream));
 
-        var xhrvision = new XMLHttpRequest();
-        xhrvision.open('POST', visionApiUrl, true);
-        //xhr.setRequestHeader('content-type', 'image/png');
-        xhrvision.setRequestHeader('content-type', 'application/octet-stream');
-        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
-        xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
+    var xhrvision = new XMLHttpRequest();
+    xhrvision.open('POST', visionApiUrl, true);
+    //xhr.setRequestHeader('content-type', 'image/png');
+    xhrvision.setRequestHeader('content-type', 'application/octet-stream');
+    //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+    xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
 
 
-        xhrvision.onreadystatechange = function () {//Call a function when the state changes.
-          if (xhrvision.status == 200) {
-            
-            var resp = JSON.parse(xhrvision.response);
-            console.log(resp.description.captions[0].text);
-            p[0]=resp.description.captions[0].text;
-            
-           
-          } else {
-            console.log(xhrvision.status);
-          }
-        }
-        //console.log(this.dataURItoBlob(stream));
-        xhrvision.send(blob);
+    xhrvision.onreadystatechange = function () {//Call a function when the state changes.
+      if (xhrvision.status == 200) {
+
+        var resp = JSON.parse(xhrvision.response);
+        console.log(resp.description.captions[0].text);
+        p[0] = resp.description.captions[0].text;
+
+
+      } else {
+        console.log(xhrvision.status);
+      }
+    }
+    //console.log(this.dataURItoBlob(stream));
+    xhrvision.send(blob);
 
   }
 
@@ -63,9 +63,10 @@ export class PhotoComponent implements OnInit {
 
       this.getAgeFromImage(image).then(imageAge => {
         //console.log(imageAge);
+        this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
-        ctx.clearRect(0, 0, vCanvas.width, vCanvas.height);
+        //ctx.clearRect(0, 0, vCanvas.width, vCanvas.height);
         ctx.strokeStyle = "#FF0000";
         const fs = video.width / 20;
         ctx.font = fs + "px Georgia";
@@ -293,6 +294,13 @@ export class PhotoComponent implements OnInit {
   addFaceToEmotion(emotions, faces) {
     var final = this.addEmotionToFace(faces, emotions);
     return final;
+  }
+
+  clearCanvas() {
+    const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
+    const ctx = vCanvas.getContext('2d');
+    ctx.clearRect(0, 0, vCanvas.width, vCanvas.height);
+
   }
 
 }
