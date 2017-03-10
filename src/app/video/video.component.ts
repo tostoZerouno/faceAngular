@@ -33,6 +33,17 @@ export class VideoComponent implements OnInit {
 
   ngAfterViewInit() {
     var constraints = {video : true};
+    //FIXME
+    //var videoSource = this.videoSelect.value;
+    //var constraints = { video: { deviceId: { exact: videoSource } } }
+    this.startStream(constraints);
+  }
+
+  onClick(){
+    var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
+    var videoSource = videoSelect.value;
+    console.log(videoSource);
+    var constraints  = { video: { deviceId:  videoSource  } };
     this.startStream(constraints);
   }
 
@@ -85,7 +96,7 @@ export class VideoComponent implements OnInit {
       //console.log(audioInputSelect);
       console.log(audioOutputSelect.value);
       console.log(videoSelect.value);
-      this.vid = "a: " + videoSelect.value;
+      //this.vid = "a: " + videoSelect.value;
       console.log(navigator.mediaDevices.getUserMedia({ video: true }));
 
     }
