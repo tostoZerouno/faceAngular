@@ -8,7 +8,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 export class VideoComponent implements OnInit {
   videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
-  /*vid;*/
+  vid;
 
   constructor() {
     //this.enumerate();
@@ -20,9 +20,9 @@ export class VideoComponent implements OnInit {
   selectSource() {
     var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
     var videoSource = videoSelect.value;
-    /*console.log(videoSelect);
+    //console.log(videoSelect);
     this.vid = "" + (videoSelect.value);
-    console.log("vid: " + this.vid);*/
+    console.log("vid: " + this.vid);
     var constraints  = { video: { deviceId: videoSource ? { exact: videoSource } : undefined } };
     this.startStream(constraints);
     //this.ngAfterViewInit();
@@ -83,10 +83,10 @@ export class VideoComponent implements OnInit {
       }
 
       //console.log(audioInputSelect);
-      /*console.log(audioOutputSelect.value);
+      console.log(audioOutputSelect.value);
       console.log(videoSelect.value);
       this.vid = "a: " + videoSelect.value;
-      console.log(navigator.mediaDevices.getUserMedia({ video: true }));*/
+      console.log(navigator.mediaDevices.getUserMedia({ video: true }));
 
     }
 
