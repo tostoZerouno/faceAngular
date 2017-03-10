@@ -9,6 +9,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 export class VideoComponent implements OnInit {
   videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
   vid;
+  localstream;
 
   constructor() {
     //this.enumerate();
@@ -25,7 +26,8 @@ export class VideoComponent implements OnInit {
     console.log("vid: " + this.vid);
     //var constraints  = { video: { deviceId: { exact: videoSource } } };
     var constraints = { video: { deviceId: videoSource } };
-    this.startStream(constraints);
+    //this.stopStream();
+    setTimeout(this.startStream(constraints),150);
     //this.ngAfterViewInit();
   }
 
@@ -44,8 +46,9 @@ export class VideoComponent implements OnInit {
     var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
     var videoSource = videoSelect.value;
     console.log(videoSource);
-    var constraints  = { video: { deviceId: { exact: videoSource } } };
-    this.startStream(constraints);
+    var constraints = { video: { deviceId: { exact: videoSource } } };
+    this.stopStream();
+    //this.startStream(constraints);
   }
 
   startStream(constraints) {
@@ -57,11 +60,25 @@ export class VideoComponent implements OnInit {
         .then(stream => {
           _video.src = window.URL.createObjectURL(stream);
           console.log(_video.src);
+          this.localstream = stream;
+          //_video.paused=false;
           _video.play();
 
         })
     }
   }
+
+  stopStream() {
+    let _video = this.video.nativeElement;
+    if (!_video.paused) {
+      //_video.pause();
+      _video.src = "";
+      this.localstream.getTracks()[0].stop();
+    }
+
+    console.log("Video off");
+  }
+
 
   enumerate() {
     navigator.mediaDevices.enumerateDevices()
@@ -112,6 +129,7 @@ export class VideoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.enumerate();
     this.enumerate();
   }
 
