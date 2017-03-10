@@ -7,34 +7,46 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 })
 
 export class VideoComponent implements OnInit {
-  videoSelect = (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]);
-  vid="";
+  videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
+  /*vid;*/
 
   constructor() {
+    //this.enumerate();
     /*this.videoSelect.onselect = function(){
       console.log(this);
     }*/
-   }
+  }
 
-   selecSource(){
-     this.ngAfterViewInit();
-     this.vid= (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]).value;
-   }
+  selectSource() {
+    var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
+    var videoSource = videoSelect.value;
+    /*console.log(videoSelect);
+    this.vid = "" + (videoSelect.value);
+    console.log("vid: " + this.vid);*/
+    var constraints  = { video: { deviceId: videoSource ? { exact: videoSource } : undefined } };
+    this.startStream(constraints);
+    //this.ngAfterViewInit();
+  }
 
   @ViewChild('video') video: any;
   // note that "#video" is the name of the template variable in the video element
 
   ngAfterViewInit() {
+    var constraints = {video : true};
+    this.startStream(constraints);
+  }
+
+  startStream(constraints){
     let _video = this.video.nativeElement;
-    this.enumerate();
-    var videoSource = (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]).value;
+    //this.enumerate();
+    //var videoSource = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]).value;
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: {deviceId: videoSource ? {exact: videoSource} : undefined}})
+      navigator.mediaDevices.getUserMedia(constraints)
         .then(stream => {
           _video.src = window.URL.createObjectURL(stream);
           console.log(_video.src);
           _video.play();
-          
+
         })
     }
   }
@@ -44,12 +56,12 @@ export class VideoComponent implements OnInit {
       .then(gotDevices)
       .catch(errorCallback);
 
-    var audioInputSelect = (<HTMLSelectElement> document.getElementsByName("audioInputSelect")[0]);
-    var audioOutputSelect = (<HTMLSelectElement> document.getElementsByName("audioOutputSelect")[0]);
-    var videoSelect = (<HTMLSelectElement> document.getElementsByName("videoSelect")[0]);
+    var audioInputSelect = (<HTMLSelectElement>document.getElementsByName("audioInputSelect")[0]);
+    var audioOutputSelect = (<HTMLSelectElement>document.getElementsByName("audioOutputSelect")[0]);
+    var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
 
     function gotDevices(deviceInfos) {
-      
+
 
       for (var i = 0; i !== deviceInfos.length; ++i) {
         var deviceInfo = deviceInfos[i];
@@ -71,9 +83,10 @@ export class VideoComponent implements OnInit {
       }
 
       //console.log(audioInputSelect);
-      console.log(audioOutputSelect.value);
+      /*console.log(audioOutputSelect.value);
       console.log(videoSelect.value);
-      console.log(navigator.mediaDevices.getUserMedia({video:true}));
+      this.vid = "a: " + videoSelect.value;
+      console.log(navigator.mediaDevices.getUserMedia({ video: true }));*/
 
     }
 
@@ -87,6 +100,7 @@ export class VideoComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.enumerate();
   }
 
 }
