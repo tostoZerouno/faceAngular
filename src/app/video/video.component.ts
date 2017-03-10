@@ -23,7 +23,8 @@ export class VideoComponent implements OnInit {
     //console.log(videoSelect);
     this.vid = "" + (videoSelect.value);
     console.log("vid: " + this.vid);
-    var constraints  = { video: { deviceId: { exact: videoSource } } };
+    //var constraints  = { video: { deviceId: { exact: videoSource } } };
+    var constraints = { video: { deviceId: videoSource } };
     this.startStream(constraints);
     //this.ngAfterViewInit();
   }
@@ -32,22 +33,22 @@ export class VideoComponent implements OnInit {
   // note that "#video" is the name of the template variable in the video element
 
   ngAfterViewInit() {
-    var constraints = {video : true};
+    var constraints = { video: true };
     //FIXME
     //var videoSource = this.videoSelect.value;
     //var constraints = { video: { deviceId: { exact: videoSource } } }
     this.startStream(constraints);
   }
 
-  onClick(){
+  onClick() {
     var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
     var videoSource = videoSelect.value;
     console.log(videoSource);
-    var constraints  = { video: { deviceId:  videoSource  } };
+    var constraints  = { video: { deviceId: { exact: videoSource } } };
     this.startStream(constraints);
   }
 
-  startStream(constraints){
+  startStream(constraints) {
     let _video = this.video.nativeElement;
     //this.enumerate();
     //var videoSource = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]).value;
