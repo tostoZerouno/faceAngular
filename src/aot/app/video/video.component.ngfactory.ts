@@ -15,7 +15,16 @@ import * as import6 from '@angular/core/src/change_detection/constants';
 import * as import7 from '@angular/core/src/linker/component_factory';
 import * as import8 from './video.component.css.shim.ngstyle';
 import * as import9 from '@angular/core/src/linker/query_list';
-import * as import10 from '@angular/core/src/linker/element_ref';
+import * as import10 from '../../node_modules/@angular/forms/src/directives/select_control_value_accessor.ngfactory';
+import * as import11 from '../../node_modules/@angular/forms/src/directives/ng_model.ngfactory';
+import * as import12 from '../../node_modules/@angular/forms/src/directives/ng_control_status.ngfactory';
+import * as import13 from '@angular/core/src/change_detection/change_detection_util';
+import * as import14 from '@angular/core/src/linker/element_ref';
+import * as import15 from '@angular/forms/src/directives/select_control_value_accessor';
+import * as import16 from '@angular/forms/src/directives/control_value_accessor';
+import * as import17 from '@angular/forms/src/directives/ng_model';
+import * as import18 from '@angular/forms/src/directives/ng_control';
+import * as import19 from '@angular/forms/src/directives/ng_control_status';
 export class Wrapper_VideoComponent {
   /*private*/ _eventHandler:Function;
   context:import0.VideoComponent;
@@ -82,16 +91,107 @@ var renderType_VideoComponent:import2.RenderComponentType = import3.createRender
 export class View_VideoComponent0 extends import1.AppView<import0.VideoComponent> {
   _viewQuery_video_0:import9.QueryList<any>;
   _el_0:any;
+  _text_1:any;
+  _el_2:any;
+  _text_3:any;
+  _el_4:any;
+  _SelectControlValueAccessor_4_3:import10.Wrapper_SelectControlValueAccessor;
+  _NG_VALUE_ACCESSOR_4_4:any[];
+  _NgModel_4_5:import11.Wrapper_NgModel;
+  _NgControl_4_6:any;
+  _NgControlStatus_4_7:import12.Wrapper_NgControlStatus;
+  _text_5:any;
+  _el_6:any;
+  _text_7:any;
+  _text_8:any;
+  /*private*/ _expr_15:any;
   constructor(viewUtils:import3.ViewUtils,parentView:import1.AppView<any>,parentIndex:number,parentElement:any) {
     super(View_VideoComponent0,renderType_VideoComponent,import5.ViewType.COMPONENT,viewUtils,parentView,parentIndex,parentElement,import6.ChangeDetectorStatus.CheckAlways);
+    this._expr_15 = import13.UNINITIALIZED;
   }
   createInternal(rootSelector:string):import7.ComponentRef<any> {
     const parentRenderNode:any = this.renderer.createViewRoot(this.parentElement);
     this._viewQuery_video_0 = new import9.QueryList<any>();
     this._el_0 = import3.createRenderElement(this.renderer,parentRenderNode,'video',new import3.InlineArray8(6,'autoplay','','height','480','width','640'),(null as any));
-    this._viewQuery_video_0.reset([new import10.ElementRef(this._el_0)]);
+    this._text_1 = this.renderer.createText(parentRenderNode,'\n',(null as any));
+    this._el_2 = import3.createRenderElement(this.renderer,parentRenderNode,'br',import3.EMPTY_INLINE_ARRAY,(null as any));
+    this._text_3 = this.renderer.createText(parentRenderNode,'\n',(null as any));
+    this._el_4 = import3.createRenderElement(this.renderer,parentRenderNode,'select',new import3.InlineArray2(2,'name','videoSelect'),(null as any));
+    this._SelectControlValueAccessor_4_3 = new import10.Wrapper_SelectControlValueAccessor(this.renderer,new import14.ElementRef(this._el_4));
+    this._NG_VALUE_ACCESSOR_4_4 = [this._SelectControlValueAccessor_4_3.context];
+    this._NgModel_4_5 = new import11.Wrapper_NgModel((null as any),(null as any),(null as any),this._NG_VALUE_ACCESSOR_4_4);
+    this._NgControl_4_6 = this._NgModel_4_5.context;
+    this._NgControlStatus_4_7 = new import12.Wrapper_NgControlStatus(this._NgControl_4_6);
+    this._text_5 = this.renderer.createText(parentRenderNode,'\n',(null as any));
+    this._el_6 = import3.createRenderElement(this.renderer,parentRenderNode,'button',new import3.InlineArray2(2,'name','bottone'),(null as any));
+    this._text_7 = this.renderer.createText(this._el_6,'',(null as any));
+    this._text_8 = this.renderer.createText(parentRenderNode,'\n',(null as any));
+    var disposable_0:Function = import3.subscribeToRenderElement(this,this._el_4,new import3.InlineArray8(6,'ngModelChange',(null as any),'change',(null as any),'blur',(null as any)),this.eventHandler(this.handleEvent_4));
+    this._NgModel_4_5.subscribe(this,this.eventHandler(this.handleEvent_4),true);
+    var disposable_1:Function = import3.subscribeToRenderElement(this,this._el_6,new import3.InlineArray2(2,'click',(null as any)),this.eventHandler(this.handleEvent_6));
+    this._viewQuery_video_0.reset([new import14.ElementRef(this._el_0)]);
     this.context.video = this._viewQuery_video_0.first;
-    this.init((null as any),((<any>this.renderer).directRenderer? (null as any): [this._el_0]),(null as any));
+    this.init((null as any),((<any>this.renderer).directRenderer? (null as any): [
+      this._el_0,
+      this._text_1,
+      this._el_2,
+      this._text_3,
+      this._el_4,
+      this._text_5,
+      this._el_6,
+      this._text_7,
+      this._text_8
+    ]
+    ),[
+      disposable_0,
+      disposable_1
+    ]
+    );
     return (null as any);
+  }
+  injectorGetInternal(token:any,requestNodeIndex:number,notFoundResult:any):any {
+    if (((token === import15.SelectControlValueAccessor) && (4 === requestNodeIndex))) { return this._SelectControlValueAccessor_4_3.context; }
+    if (((token === import16.NG_VALUE_ACCESSOR) && (4 === requestNodeIndex))) { return this._NG_VALUE_ACCESSOR_4_4; }
+    if (((token === import17.NgModel) && (4 === requestNodeIndex))) { return this._NgModel_4_5.context; }
+    if (((token === import18.NgControl) && (4 === requestNodeIndex))) { return this._NgControl_4_6; }
+    if (((token === import19.NgControlStatus) && (4 === requestNodeIndex))) { return this._NgControlStatus_4_7.context; }
+    return notFoundResult;
+  }
+  detectChangesInternal(throwOnChange:boolean):void {
+    this._SelectControlValueAccessor_4_3.ngDoCheck(this,this._el_4,throwOnChange);
+    const currVal_4_1_0:any = 'videoSelect';
+    this._NgModel_4_5.check_name(currVal_4_1_0,throwOnChange,false);
+    const currVal_4_1_1:any = this.context.selectedDevice;
+    this._NgModel_4_5.check_model(currVal_4_1_1,throwOnChange,false);
+    this._NgModel_4_5.ngDoCheck(this,this._el_4,throwOnChange);
+    this._NgControlStatus_4_7.ngDoCheck(this,this._el_4,throwOnChange);
+    this._NgControlStatus_4_7.checkHost(this,this,this._el_4,throwOnChange);
+    const currVal_15:any = import3.inlineInterpolate(1,'',this.context.bottone,'');
+    if (import3.checkBinding(throwOnChange,this._expr_15,currVal_15)) {
+      this.renderer.setText(this._text_7,currVal_15);
+      this._expr_15 = currVal_15;
+    }
+  }
+  destroyInternal():void {
+    this._NgModel_4_5.ngOnDestroy();
+  }
+  handleEvent_4(eventName:string,$event:any):boolean {
+    this.markPathToRootAsCheckOnce();
+    var result:boolean = true;
+    result = (this._SelectControlValueAccessor_4_3.handleEvent(eventName,$event) && result);
+    if ((eventName == 'ngModelChange')) {
+      const pd_sub_0:any = ((<any>this.context.selectSource()) !== false);
+      result = (pd_sub_0 && result);
+    }
+    return result;
+  }
+  handleEvent_6(eventName:string,$event:any):boolean {
+    this.markPathToRootAsCheckOnce();
+    var result:boolean = true;
+    if ((eventName == 'click')) {
+      const pd_sub_0:any = ((<any>this.context.onClick()) !== false);
+      result = (pd_sub_0 && result);
+    }
+    return result;
   }
 }

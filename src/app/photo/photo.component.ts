@@ -7,23 +7,45 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PhotoComponent implements OnInit {
   age = "Clicca sull'immagine per cominciare (o per mettere in pausa)";
-  /* options = {
-     audio: false,
-     video: true,
-     width: parent.innerWidth / 2,
-     height: parent.innerHeight / 2
-   };*/
-
+  description = ["no description"];
+ 
   fermaticazzo = 0;
 
   constructor() {
   }
 
-  /*onSuccess = (stream: MediaStream) => {
-    setTimeout(() => this.onResize(), 400);
-  };
+  computerVision(blob){
+    
+    const visionApiUrl = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description';
 
-  onError = (err) => { };*/
+        let p = this.description;
+        //var formData = new FormData();
+        //formData.append("file", dataURItoBlob(stream));
+
+        var xhrvision = new XMLHttpRequest();
+        xhrvision.open('POST', visionApiUrl, true);
+        //xhr.setRequestHeader('content-type', 'image/png');
+        xhrvision.setRequestHeader('content-type', 'application/octet-stream');
+        //xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+        xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
+
+
+        xhrvision.onreadystatechange = function () {//Call a function when the state changes.
+          if (xhrvision.status == 200) {
+            
+            var resp = JSON.parse(xhrvision.response);
+            console.log(resp.description.captions[0].text);
+            p[0]=resp.description.captions[0].text;
+            
+           
+          } else {
+            console.log(xhrvision.status);
+          }
+        }
+        //console.log(this.dataURItoBlob(stream));
+        xhrvision.send(blob);
+
+  }
 
   evaluateAge() {
     this.age = this.fermaticazzo == 1 ? "Cercando..." : "In pausa";
@@ -141,6 +163,7 @@ export class PhotoComponent implements OnInit {
     var blob = this.dataURItoBlob(stream);
     var finalresponse;
     var comp = this;
+    this.computerVision(blob);
     return new Promise(
       (resolve, reject) => {
         const faceApiUrl = [
