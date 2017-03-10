@@ -23,7 +23,7 @@ export class VideoComponent implements OnInit {
     //console.log(videoSelect);
     this.vid = "" + (videoSelect.value);
     console.log("vid: " + this.vid);
-    var constraints  = { video: { deviceId: videoSource ? { exact: videoSource } : undefined } };
+    var constraints  = { video: { deviceId: { exact: videoSource } } };
     this.startStream(constraints);
     //this.ngAfterViewInit();
   }
