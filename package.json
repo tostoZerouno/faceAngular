@@ -4,7 +4,7 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "start": "http-server dist/out-tsc/app/",
+    "start": "http-server dist/",
     "preinstall": "npm install -g http-server",
     "ng": "ng",
     "test": "ng test",
