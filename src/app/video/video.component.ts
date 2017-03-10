@@ -10,6 +10,7 @@ export class VideoComponent implements OnInit {
   videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
   vid;
   localstream;
+  bottone = "Ferma il Video"
 
   constructor() {
     //this.enumerate();
@@ -26,7 +27,7 @@ export class VideoComponent implements OnInit {
     console.log("vid: " + this.vid);
     //var constraints  = { video: { deviceId: { exact: videoSource } } };
     var constraints = { video: { deviceId: videoSource } };
-    //this.stopStream();
+    this.stopStream();
     setTimeout(this.startStream(constraints), 150);
     //this.ngAfterViewInit();
   }
@@ -43,11 +44,19 @@ export class VideoComponent implements OnInit {
   }
 
   onClick() {
+    let _video = this.video.nativeElement;
     var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
     var videoSource = videoSelect.value;
     console.log(videoSource);
     var constraints = { video: { deviceId: { exact: videoSource } } };
-    this.stopStream();
+    if (!_video.paused){
+        this.stopStream();
+        this.bottone = "Avvia il Video";
+    }else{
+      this.startStream(constraints);
+      this.bottone = "Ferma il Video";
+    }
+    
     //this.startStream(constraints);
   }
 
@@ -63,15 +72,6 @@ export class VideoComponent implements OnInit {
           this.localstream = stream;
           //_video.paused=false;
           _video.load();
-
-         /* if (!_video.paused) {
-            console.log("not paused");
-            _video.pause();
-            _video.src = " ";
-            this.localstream.getTracks().forEach((track) => {
-              track.stop();
-            });
-          }*/
 
         })
     }
@@ -98,8 +98,8 @@ export class VideoComponent implements OnInit {
       .then(gotDevices)
       .catch(errorCallback);
 
-    var audioInputSelect = (<HTMLSelectElement>document.getElementsByName("audioInputSelect")[0]);
-    var audioOutputSelect = (<HTMLSelectElement>document.getElementsByName("audioOutputSelect")[0]);
+    /*var audioInputSelect = (<HTMLSelectElement>document.getElementsByName("audioInputSelect")[0]);
+    var audioOutputSelect = (<HTMLSelectElement>document.getElementsByName("audioOutputSelect")[0]);*/
     var videoSelect = (<HTMLSelectElement>document.getElementsByName("videoSelect")[0]);
 
     function gotDevices(deviceInfos) {
@@ -109,7 +109,7 @@ export class VideoComponent implements OnInit {
         var deviceInfo = deviceInfos[i];
         var option = document.createElement('option');
         option.value = deviceInfo.deviceId;
-        if (deviceInfo.kind === 'audioinput') {
+        /*if (deviceInfo.kind === 'audioinput') {
           option.text = deviceInfo.label ||
             'Microphone ' + (audioInputSelect.length + 1);
           audioInputSelect.appendChild(option);
@@ -117,7 +117,8 @@ export class VideoComponent implements OnInit {
           option.text = deviceInfo.label || 'Speaker ' +
             (audioOutputSelect.length + 1);
           audioOutputSelect.appendChild(option);
-        } else if (deviceInfo.kind === 'videoinput') {
+        } else */
+        if (deviceInfo.kind === 'videoinput') {
           option.text = deviceInfo.label || 'Camera ' +
             (videoSelect.length + 1);
           videoSelect.appendChild(option);
@@ -125,8 +126,8 @@ export class VideoComponent implements OnInit {
       }
 
       //console.log(audioInputSelect);
-      console.log(audioOutputSelect.value);
-      console.log(videoSelect.value);
+      /*console.log(audioOutputSelect.value);
+      console.log(videoSelect.value);*/
       //this.vid = "a: " + videoSelect.value;
       //console.log(navigator.mediaDevices.getUserMedia({ video: true }));
 
@@ -143,7 +144,7 @@ export class VideoComponent implements OnInit {
 
   ngOnInit() {
     this.enumerate();
-    this.enumerate();
+/*    this.enumerate();*/
   }
 
 }
