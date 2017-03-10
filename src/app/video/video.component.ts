@@ -27,7 +27,7 @@ export class VideoComponent implements OnInit {
     //var constraints  = { video: { deviceId: { exact: videoSource } } };
     var constraints = { video: { deviceId: videoSource } };
     //this.stopStream();
-    setTimeout(this.startStream(constraints),150);
+    setTimeout(this.startStream(constraints), 150);
     //this.ngAfterViewInit();
   }
 
@@ -62,7 +62,16 @@ export class VideoComponent implements OnInit {
           console.log(_video.src);
           this.localstream = stream;
           //_video.paused=false;
-          _video.play();
+          _video.load();
+
+         /* if (!_video.paused) {
+            console.log("not paused");
+            _video.pause();
+            _video.src = " ";
+            this.localstream.getTracks().forEach((track) => {
+              track.stop();
+            });
+          }*/
 
         })
     }
@@ -70,10 +79,14 @@ export class VideoComponent implements OnInit {
 
   stopStream() {
     let _video = this.video.nativeElement;
+    console.log(this.localstream);
     if (!_video.paused) {
-      //_video.pause();
+      console.log("not paused");
+      _video.pause();
       _video.src = "";
-      this.localstream.getTracks()[0].stop();
+      this.localstream.getTracks().forEach((track) => {
+        track.stop();
+      });
     }
 
     console.log("Video off");
@@ -115,7 +128,7 @@ export class VideoComponent implements OnInit {
       console.log(audioOutputSelect.value);
       console.log(videoSelect.value);
       //this.vid = "a: " + videoSelect.value;
-      console.log(navigator.mediaDevices.getUserMedia({ video: true }));
+      //console.log(navigator.mediaDevices.getUserMedia({ video: true }));
 
     }
 
