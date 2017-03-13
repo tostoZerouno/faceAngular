@@ -10,31 +10,9 @@ export class PhotoComponent implements OnInit {
   description = "no description";
   enableCapture = false;
   log = "";
+  faces={};
 
   constructor() { }
-
-  computerVision(blob) {
-
-    return new Promise((resolve, reject) => {
-      const visionApiUrl = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description';
-
-      var xhrvision = new XMLHttpRequest();
-      xhrvision.open('POST', visionApiUrl, true);
-      xhrvision.setRequestHeader('content-type', 'application/octet-stream');
-      xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
-
-      xhrvision.onreadystatechange = function () {
-        if (xhrvision.status == 200) {
-          var resp = JSON.parse(xhrvision.response);
-          console.log(resp.description.captions[0].text);
-          resolve(resp.description.captions);
-        } else {
-          console.log(xhrvision.status);
-        }
-      }
-      xhrvision.send(blob);
-    })
-  }
 
   evaluateAge() {
     this.age = this.enableCapture ? "Cercando...(clicca sull'immagine per mettere in pausa)" : "In pausa(clicca sull'immagine per ricominciare)";
@@ -149,24 +127,12 @@ export class PhotoComponent implements OnInit {
     return new Promise(
       (resolve, reject) => {
         this.getAgeFromImage(blob).then(faces => {
-          face = true;
-          if (Object.keys(finalresponse).length === 0) {
-            console.log(finalresponse);
-            finalresponse = faces;
-          } else if (emotion){
-            finalresponse = this.addFaceToEmotion(finalresponse, faces);
-            resolve(finalresponse);
-          }
+          this.faces=faces;
+          //resolve(faces);
         });
         this.getEmotionFromImage(blob).then(emotions => {
-          emotion = true;
-          if (Object.keys(finalresponse).length === 0) {
-            console.log(finalresponse);
-            finalresponse = emotions;
-          } else if (face){
-            finalresponse = this.addEmotionToFace(finalresponse, emotions);
-            resolve(finalresponse);
-          }
+          this.faces = this.addEmotionToFace(this.faces, emotions);
+            resolve(this.faces);
         });
       });
   }
@@ -220,6 +186,29 @@ export class PhotoComponent implements OnInit {
     })
   }
 
+
+  computerVision(blob) {
+
+    return new Promise((resolve, reject) => {
+      const visionApiUrl = 'https://westus.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Description';
+
+      var xhrvision = new XMLHttpRequest();
+      xhrvision.open('POST', visionApiUrl, true);
+      xhrvision.setRequestHeader('content-type', 'application/octet-stream');
+      xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
+
+      xhrvision.onreadystatechange = function () {
+        if (xhrvision.status == 200) {
+          var resp = JSON.parse(xhrvision.response);
+          console.log(resp.description.captions[0].text);
+          resolve(resp.description.captions);
+        } else {
+          console.log(xhrvision.status);
+        }
+      }
+      xhrvision.send(blob);
+    })
+  }
   dataURItoBlob(dataURI) {
     var byteString = atob(dataURI.split(',')[1]);
     var ab = new ArrayBuffer(byteString.length);
