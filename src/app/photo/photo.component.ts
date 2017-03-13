@@ -22,7 +22,7 @@ export class PhotoComponent implements OnInit {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
-      const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 0.3)).size;
+      const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
       const rapp = 153600 / size;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
@@ -32,6 +32,9 @@ export class PhotoComponent implements OnInit {
 
         this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
+        console.log(imageAge[0]);
+        this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " "+
+          imageAge[0].faceRectangle.width;
         const ctx = vCanvas.getContext('2d');
         //ctx
         ctx.strokeStyle = "#FF0000";
@@ -139,7 +142,7 @@ export class PhotoComponent implements OnInit {
             } else {
               this.faces = this.addEmotionToFace(this.faces, emotions);
             }
-            this.log=""+delay;
+            this.log = "" + delay;
             console.log(this.faces);
             resolve(this.faces);
           });
