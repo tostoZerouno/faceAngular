@@ -149,19 +149,21 @@ export class PhotoComponent implements OnInit {
     return new Promise(
       (resolve, reject) => {
         this.getAgeFromImage(blob).then(faces => {
-          face=true;
-          if (!emotion) {
+          face = true;
+          if (Object.keys(finalresponse).length === 0) {
+            console.log(finalresponse);
             finalresponse = faces;
-          } else {
+          } else if (emotion){
             finalresponse = this.addFaceToEmotion(finalresponse, faces);
             resolve(finalresponse);
           }
         });
         this.getEmotionFromImage(blob).then(emotions => {
-          emotion=true;
-          if (!face) {
+          emotion = true;
+          if (Object.keys(finalresponse).length === 0) {
+            console.log(finalresponse);
             finalresponse = emotions;
-          } else {
+          } else if (face){
             finalresponse = this.addEmotionToFace(finalresponse, emotions);
             resolve(finalresponse);
           }
