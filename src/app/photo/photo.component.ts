@@ -45,7 +45,7 @@ export class PhotoComponent implements OnInit {
 
       if (size > 0) {
         this.analyzeImage(image).then(imageAge => {
-
+          component.log+="->ANALYZED";
           this.clearCanvas();
           const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
           if (Object.keys(imageAge[0]).length > 0) {
