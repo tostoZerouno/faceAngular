@@ -10,7 +10,7 @@ export class PhotoComponent implements OnInit {
   description = "no description";
   enableCapture = false;
   log = "";
-  faces={};
+  faces = {};
 
   constructor() { }
 
@@ -28,7 +28,7 @@ export class PhotoComponent implements OnInit {
       var image = canvas.toDataURL('image/jpeg', rapp);
 
       this.analyzeImage(image).then(imageAge => {
-        this.log = imageAge[0];
+        //this.log = imageAge[0];
 
         this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
@@ -116,24 +116,36 @@ export class PhotoComponent implements OnInit {
   }
 
   analyzeImage(stream) {
-    var face = false;
-    var emotion = false;
-    var blob = this.dataURItoBlob(stream);
-    var finalresponse = {};
-    var comp = this;
+    var delay = 1000;
+    const blob = this.dataURItoBlob(stream);
+    //var finalresponse = {};
+    //var comp = this;
     this.computerVision(blob).then(captions => {
       this.description = captions[0].text;
     });
     return new Promise(
       (resolve, reject) => {
         this.getAgeFromImage(blob).then(faces => {
-          this.faces=faces;
+          this.faces = faces;
+          delay = 0;
           //resolve(faces);
         });
-        this.getEmotionFromImage(blob).then(emotions => {
-          this.faces = this.addEmotionToFace(this.faces, emotions);
+
+        setTimeout(() => {
+          this.getEmotionFromImage(blob).then(emotions => {
+
+            if (Object.keys(this.faces).length === 0) {
+              this.faces = emotions;
+            } else {
+              this.faces = this.addEmotionToFace(this.faces, emotions);
+            }
+            this.log=""+delay;
+            console.log(this.faces);
             resolve(this.faces);
-        });
+          });
+        }, delay);
+
+
       });
   }
 
