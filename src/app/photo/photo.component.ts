@@ -9,7 +9,7 @@ export class PhotoComponent implements OnInit {
   age = "Clicca sull'immagine per cominciare";
   description = "no description";
   enableCapture = false;
-  log ="";
+  log = "";
 
   constructor() { }
 
@@ -44,16 +44,18 @@ export class PhotoComponent implements OnInit {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
-      const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg',0.3)).size;
-      const rapp = 153600/size;
+      const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 0.3)).size;
+      const rapp = 153600 / size;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
 
-      this.getAgeFromImage(image).then(imageAge => {
+      this.analyzeImage(image).then(imageAge => {
+        this.log = imageAge[0];
+
         this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
-        ctx
+        //ctx
         ctx.strokeStyle = "#FF0000";
         const fs = video.width / 20;
         ctx.font = fs + "px Georgia";
@@ -132,18 +134,42 @@ export class PhotoComponent implements OnInit {
     canvas.height = video.height;
     canvas.width = video.width * 2;
 
-    this.log = video.height+"x"+video.width+" c:"+canvas.height+"x"+canvas.width;
+    this.log = video.height + "x" + video.width + " c:" + canvas.height + "x" + canvas.width;
   }
 
-  getAgeFromImage(stream) {
+  analyzeImage(stream) {
     var face = false;
     var emotion = false;
     var blob = this.dataURItoBlob(stream);
-    var finalresponse;
+    var finalresponse = {};
     var comp = this;
     this.computerVision(blob).then(captions => {
       this.description = captions[0].text;
     });
+    return new Promise(
+      (resolve, reject) => {
+        this.getAgeFromImage(blob).then(faces => {
+          face=true;
+          if (!emotion) {
+            finalresponse = faces;
+          } else {
+            finalresponse = this.addFaceToEmotion(finalresponse, faces);
+            resolve(finalresponse);
+          }
+        });
+        this.getEmotionFromImage(blob).then(emotions => {
+          emotion=true;
+          if (!face) {
+            finalresponse = emotions;
+          } else {
+            finalresponse = this.addEmotionToFace(finalresponse, emotions);
+            resolve(finalresponse);
+          }
+        });
+      });
+  }
+
+  getAgeFromImage(blob) {
     return new Promise(
       (resolve, reject) => {
         const faceApiUrl = [
@@ -163,39 +189,33 @@ export class PhotoComponent implements OnInit {
         xhrface.onreadystatechange = function () {
           if (xhrface.status == 200) {
             var resp = JSON.parse(xhrface.response);
-            face = true;
-            if (emotion) {
-              finalresponse = comp.addFaceToEmotion(finalresponse, resp);
-              resolve(finalresponse);
-            } else {
-              finalresponse = resp;
-            }
+            resolve(resp);
           } else {
             resolve(xhrface.status);
           }
         }
-        if (!face) xhrface.send(blob);
-
-        var xhremotion = new XMLHttpRequest();
-        xhremotion.open('POST', emotionApiUrl, true);
-        xhremotion.setRequestHeader('content-type', 'application/octet-stream');
-        xhremotion.setRequestHeader('Ocp-Apim-Subscription-Key', "81f079954302459e904d8c98d06263b1");
-        xhremotion.onreadystatechange = function () {
-          if (xhremotion.status == 200) {
-            var resp = JSON.parse(xhremotion.response);
-            emotion = true;
-            if (face) {
-              finalresponse = comp.addEmotionToFace(finalresponse, resp);
-              resolve(finalresponse);
-            } else {
-              finalresponse = resp;
-            }
-          } else {
-            resolve(xhremotion.status);
-          }
-        }
-        if (!emotion) xhremotion.send(this.dataURItoBlob(stream));
+        xhrface.send(blob);
       });
+  }
+
+  getEmotionFromImage(blob) {
+    return new Promise((resolve, reject) => {
+      const emotionApiUrl = 'https://westus.api.cognitive.microsoft.com/emotion/v1.0/recognize?';
+
+      var xhremotion = new XMLHttpRequest();
+      xhremotion.open('POST', emotionApiUrl, true);
+      xhremotion.setRequestHeader('content-type', 'application/octet-stream');
+      xhremotion.setRequestHeader('Ocp-Apim-Subscription-Key', "81f079954302459e904d8c98d06263b1");
+      xhremotion.onreadystatechange = function () {
+        if (xhremotion.status == 200) {
+          var resp = JSON.parse(xhremotion.response);
+          resolve(resp);
+        } else {
+          resolve(xhremotion.status);
+        }
+      }
+      xhremotion.send(blob);
+    })
   }
 
   dataURItoBlob(dataURI) {
@@ -233,6 +253,8 @@ export class PhotoComponent implements OnInit {
   }
 
   addEmotionToFace(faces, emotions) {
+    /*console.log(faces);
+    console.log(emotions);*/
     var final = faces;
     var arrF = Object.keys(faces).map(function (key) { return faces[key]; });
 
@@ -248,10 +270,8 @@ export class PhotoComponent implements OnInit {
         if (dist < min) {
           face.scores = emotion.scores;
         }
-
       });
     });
-
     return final;
   }
   addFaceToEmotion(emotions, faces) {
