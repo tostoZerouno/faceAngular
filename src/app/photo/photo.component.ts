@@ -142,8 +142,10 @@ export class PhotoComponent implements OnInit {
 
           });
 
-
           setTimeout(() => this.evaluateAge(), 3000);
+        },(error)=>{
+          setTimeout(() => this.evaluateAge(), 3000);
+
         });
 
       } else {
@@ -186,19 +188,25 @@ export class PhotoComponent implements OnInit {
           this.faces = faces;
           delay = 0;
           //resolve(faces);
+        },(error)=>{
+          console.log(error);
         });
 
         setTimeout(() => {
           this.getEmotionFromImage(blob).then(emotions => {
 
             if (Object.keys(this.faces).length === 0) {
-              this.faces = emotions;
+              //this.faces = emotions;
+              reject(new Error('fail'));
             } else {
               this.faces = this.addEmotionToFace(this.faces, emotions);
+              resolve(this.faces);
             }
             this.log += "" + delay + " " + Object.keys(this.faces).length + " ";
             console.log(this.log);
-            resolve(this.faces);
+            
+          },(error)=>{
+             console.log(error);
           });
         }, delay);
 
@@ -231,7 +239,7 @@ export class PhotoComponent implements OnInit {
               var resp = JSON.parse(xhrface.response);
               resolve(resp);
             } else {
-              resolve(xhrface.status);
+              reject(new Error('fail'));
             }
           }
         }
@@ -254,7 +262,7 @@ export class PhotoComponent implements OnInit {
             var resp = JSON.parse(xhremotion.response);
             resolve(resp);
           } else {
-            resolve(xhremotion.status);
+            reject(new Error('fail'));
           }
         }
       }
