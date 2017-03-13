@@ -72,7 +72,7 @@ export class VideoComponent implements OnInit {
 
   stopStream() {
     let _video = this.video.nativeElement;
-    console.log(this.localstream);
+    //console.log(this.localstream);
     if (!_video.paused) {
       console.log("not paused");
       _video.pause();

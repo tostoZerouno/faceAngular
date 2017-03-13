@@ -11,12 +11,17 @@ export class PhotoComponent implements OnInit {
   enableCapture = false;
   log = "";
   faces = {};
+  faceToPerson = {};
 
   constructor() { }
 
   evaluateAge() {
+    const SIRE = "Michele Bersini";
+    //const SIRE = "Tommaso Tosi";
+    const component = this;
     this.age = this.enableCapture ? "Cercando...(clicca sull'immagine per mettere in pausa)" : "In pausa(clicca sull'immagine per ricominciare)";
     if (this.enableCapture) {
+      var faceIds = [];
       const video = <any>document.getElementsByTagName('video')[0];
       const canvas = <any>document.getElementsByName('canvas')[0];
       canvas.width = video.videoWidth;
@@ -30,12 +35,9 @@ export class PhotoComponent implements OnInit {
 
       if (size > 0) {
         this.analyzeImage(image).then(imageAge => {
-          //this.log = imageAge[0];
 
           this.clearCanvas();
           const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
-          //console.log(imageAge[0]);
-          //imageAge[0] = {};
           if (Object.keys(imageAge[0]).length > 0) {
             this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " " +
               imageAge[0].faceRectangle.width;
@@ -52,62 +54,99 @@ export class PhotoComponent implements OnInit {
           var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
           var arr = Object.keys(imageAge).map(function (key) { return imageAge[key]; });
           arr.forEach(function (element) {
-            var age = element.faceAttributes.age;
-            var smile = element.faceAttributes.smile;
-            var facialHair = element.faceAttributes.facialHair;
-            var glasses = element.faceAttributes.glasses.toLowerCase();
-            const emotionMapping = {
-              "anger": "arrabbiato",
-              "contempt": "contento",
-              "disgust": "disgustato",
-              "fear": "spaventato",
-              "happiness": "felice",
-              "neutral": "neutro",
-              "sadness": "triste",
-              "surprise": "sorpreso"
-            }
-            const rect = element.faceRectangle;
-            const left = (rect.left + rect.width) / resize;
-            var top = (rect.top /*+ rect.height*/) / resize;
-            ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
-
-            var text = age + " anni, ";// +
-            ctx.fillText(text, left, top);
-            top += 1.3 * fs;
-
-            var scores = element.scores;
-            var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
-            text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
-            ctx.fillText(emotionMapping[text], left, top);
-            top += 1.3 * fs;
-
-            text = (facialHair.beard >= 0.2 ? "barba " : "") +
-              (facialHair.moustache >= 0.2 ? "baffi " : "");
-            ctx.fillText(text, left, top);
-            top += 1.3 * fs;
-
-            switch (glasses) {
-              case "noglasses":
-                text = "Non porti gli occhiali";
-                break;
-              case "readingglasses":
-                text = "Occhiali da lettura";
-                break;
-              case "sunglasses":
-                text = "Occhiali da sole";
-                //text="Spacciatore";
-                break;
-              default:
-                text = "";
-            }
-            ctx.fillText(text, left, top);
-            //top+=1.3*fs;
+            var faceId = element.faceId;
+            console.log(faceId);
+            faceIds[faceIds.length] = faceId;
           });
+
+          //console.log(faceIds);
+          component.identifyPersonId(faceIds).then(() => {
+            arr.forEach(function (element) {
+              console.log(element);
+              //faceIds.concat(faceId);
+              var faceId = element.faceId;
+              var name = element.name;
+              var age = element.faceAttributes.age;
+              var smile = element.faceAttributes.smile;
+              var facialHair = element.faceAttributes.facialHair;
+              var glasses = element.faceAttributes.glasses.toLowerCase();
+              var scores = element.scores;
+              const emotionMapping = {
+                "anger": "arrabbiato",
+                "contempt": "contento",
+                "disgust": "disgustato",
+                "fear": "spaventato",
+                "happiness": "felice",
+                "neutral": "neutro",
+                "sadness": "triste",
+                "surprise": "sorpreso",
+                "libero": "libero professionista"
+              }
+              if (name === SIRE) {
+                age = "Senza Età";
+                scores.libero = 1000;
+                name  = "Mio Sire"
+              }
+
+              const rect = element.faceRectangle;
+              const left = (rect.left + rect.width) / resize;
+              var top = (rect.top /*+ rect.height*/) / resize;
+              ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
+
+              var text;
+              if(isNaN(age)){
+                text=age;
+              }else{
+                text = age + " anni, "
+              }
+              //var text = age + " anni, ";// +
+
+              ctx.fillText(text, left, top);
+              top += 1.3 * fs;
+
+
+              var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
+              text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
+              ctx.fillText(emotionMapping[text], left, top);
+              top += 1.3 * fs;
+
+              text = (facialHair.beard >= 0.2 ? "barba " : "") +
+                (facialHair.moustache >= 0.2 ? "baffi " : "");
+              ctx.fillText(text, left, top);
+              top += 1.3 * fs;
+
+              switch (glasses) {
+                case "noglasses":
+                  text = "Non porti gli occhiali";
+                  break;
+                case "readingglasses":
+                  text = "Occhiali da lettura";
+                  break;
+                case "sunglasses":
+                  text = "Occhiali da sole";
+                  //text="Spacciatore";
+                  break;
+                default:
+                  text = "";
+              }
+              ctx.fillText(text, left, top);
+              console.log(name);
+              if (element.name) {
+                console.log("name");
+                top += 1.3 * fs;
+                text = name;
+                ctx.fillText(text, left, top);
+              }
+
+            });
+
+          });
+
 
           setTimeout(() => this.evaluateAge(), 3000);
         });
 
-      }else{
+      } else {
         this.log = "SIZE ZERO";
         setTimeout(() => this.evaluateAge(), 1000);
       }
@@ -140,6 +179,7 @@ export class PhotoComponent implements OnInit {
     this.computerVision(blob).then(captions => {
       this.description = captions[0].text;
     });
+    //this.identifyPerson(blob);
     return new Promise(
       (resolve, reject) => {
         this.getAgeFromImage(blob).then(faces => {
@@ -238,7 +278,7 @@ export class PhotoComponent implements OnInit {
           if (xhrvision.status == 200) {
             //console.log(this);
             var resp = JSON.parse(xhrvision.response);
-            console.log(resp.description.captions[0].text);
+            //console.log(resp.description.captions[0].text);
             resolve(resp.description.captions);
           } else {
             console.log(xhrvision.status);
@@ -258,17 +298,7 @@ export class PhotoComponent implements OnInit {
     return new Blob([ab], { type: 'image/jpeg' });
   }
 
-  ngOnInit() {
-    /*var interval = setInterval(() => {
-      this.onResize()
-      const video = <any>document.getElementsByTagName('video')[0];
-      console.log("gira");
-      if (video.height > 0) {
-        clearInterval(interval);
-        console.log("stop");
-      }
-    }, 100);*/
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
     var interval = setInterval(() => {
@@ -325,4 +355,98 @@ export class PhotoComponent implements OnInit {
     const ctx = vCanvas.getContext('2d');
     ctx.clearRect(0, 0, vCanvas.width, vCanvas.height);
   }
+
+  identifyPersonId(faceIds) {
+    const component = this;
+
+    return new Promise((resolve, reject) => {
+      const faceApiUrl = [
+        'https://westus.api.cognitive.microsoft.com/face/v1.0/identify?'
+      ].join('&');
+      var groupId = 'zerouno';
+
+      const postData = {
+        "personGroupId": groupId,
+        "faceIds": faceIds,
+        "maxNumOfCandidatesReturned": 1,
+        "confidenceThreshold": 0.1
+      };
+
+
+      var xhrface = new XMLHttpRequest();
+      xhrface.open('POST', faceApiUrl, true);
+      xhrface.setRequestHeader('content-type', 'application/json');
+      xhrface.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
+
+      xhrface.onreadystatechange = function () {
+        if (xhrface.readyState == 4) {
+          if (xhrface.status == 200) {
+            var resp = JSON.parse(xhrface.response);
+            var count = 0;
+            //console.log(resp);
+            resp.forEach(function (element) {
+              count++;
+              component.getPersonByPersonId(element.candidates[0].personId).then((r) => {
+                //console.log(r['userData']);
+                component.faceToPerson[element.faceId] = r['name'];
+                var arr = Object.keys(component.faces).map(function (key) { return component.faces[key]; });
+                arr.forEach(function (face) {
+                  if (face.faceId === element.faceId) {
+                    face.name = r['name'];
+                  }
+                  if (count == resp.length) {
+                    resolve(resp);
+                  }
+                });
+                //console.log(component.faces);
+              });
+
+            });
+            //console.log(component.faceToPerson);
+            //resolve(resp);
+          } else {
+            resolve(xhrface.status);
+          }
+        }
+
+        if (xhrface.status == 400) {
+          resolve({});
+        }
+      }
+      xhrface.send(JSON.stringify(postData));
+    });
+  }
+
+  getPersonByPersonId(personId) {
+    const component = this;
+    return new Promise((resolve, reject) => {
+      const faceApiUrl = [
+        'https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups',
+        'zerouno',
+        'persons',
+        personId
+      ].join('/');
+      var groupId = 'zerouno';
+
+      var xhrface = new XMLHttpRequest();
+      xhrface.open('GET', faceApiUrl, true);
+      //xhrface.setRequestHeader('content-type', 'application/json');
+      xhrface.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
+
+      xhrface.onreadystatechange = function () {
+        if (xhrface.readyState == 4) {
+          if (xhrface.status == 200) {
+            var resp = JSON.parse(xhrface.response);
+            //console.log(resp);
+            resolve(resp);
+          } else {
+            resolve(xhrface.status);
+          }
+        }
+      }
+      xhrface.send();
+    });
+
+  }
+
 }
