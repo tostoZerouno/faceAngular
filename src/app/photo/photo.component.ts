@@ -24,87 +24,93 @@ export class PhotoComponent implements OnInit {
       canvas.getContext('2d').drawImage(video, 0, 0);
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
       const rapp = 153600 / size;
-      this.log = size+" "+rapp;
+      this.log = size + " " + rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
 
-      this.analyzeImage(image).then(imageAge => {
-        //this.log = imageAge[0];
+      if (size > 0) {
+        this.analyzeImage(image).then(imageAge => {
+          //this.log = imageAge[0];
 
-        this.clearCanvas();
-        const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
-        //console.log(imageAge[0]);
-        //imageAge[0] = {};
-        if (Object.keys(imageAge[0]).length > 0) {
-          this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " " +
-            imageAge[0].faceRectangle.width;
-        } else {
-          this.log = "no rectangles.....";
-        }
-
-        const ctx = vCanvas.getContext('2d');
-        //ctx
-        ctx.strokeStyle = "#FF0000";
-        const fs = video.width / 20;
-        ctx.font = fs + "px Georgia";
-        ctx.fillStyle = "#FF0000";
-        var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
-        var arr = Object.keys(imageAge).map(function (key) { return imageAge[key]; });
-        arr.forEach(function (element) {
-          var age = element.faceAttributes.age;
-          var smile = element.faceAttributes.smile;
-          var facialHair = element.faceAttributes.facialHair;
-          var glasses = element.faceAttributes.glasses.toLowerCase();
-          const emotionMapping = {
-            "anger": "arrabbiato",
-            "contempt": "contento",
-            "disgust": "disgustato",
-            "fear": "spaventato",
-            "happiness": "felice",
-            "neutral": "neutro",
-            "sadness": "triste",
-            "surprise": "sorpreso"
+          this.clearCanvas();
+          const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
+          //console.log(imageAge[0]);
+          //imageAge[0] = {};
+          if (Object.keys(imageAge[0]).length > 0) {
+            this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " " +
+              imageAge[0].faceRectangle.width;
+          } else {
+            this.log = "no rectangles.....";
           }
-          const rect = element.faceRectangle;
-          const left = (rect.left + rect.width) / resize;
-          var top = (rect.top /*+ rect.height*/) / resize;
-          ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
 
-          var text = age + " anni, ";// +
-          ctx.fillText(text, left, top);
-          top += 1.3 * fs;
+          const ctx = vCanvas.getContext('2d');
+          //ctx
+          ctx.strokeStyle = "#FF0000";
+          const fs = video.width / 20;
+          ctx.font = fs + "px Georgia";
+          ctx.fillStyle = "#FF0000";
+          var resize = Math.min(video.videoWidth / video.width, video.videoHeight / video.height);
+          var arr = Object.keys(imageAge).map(function (key) { return imageAge[key]; });
+          arr.forEach(function (element) {
+            var age = element.faceAttributes.age;
+            var smile = element.faceAttributes.smile;
+            var facialHair = element.faceAttributes.facialHair;
+            var glasses = element.faceAttributes.glasses.toLowerCase();
+            const emotionMapping = {
+              "anger": "arrabbiato",
+              "contempt": "contento",
+              "disgust": "disgustato",
+              "fear": "spaventato",
+              "happiness": "felice",
+              "neutral": "neutro",
+              "sadness": "triste",
+              "surprise": "sorpreso"
+            }
+            const rect = element.faceRectangle;
+            const left = (rect.left + rect.width) / resize;
+            var top = (rect.top /*+ rect.height*/) / resize;
+            ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
 
-          var scores = element.scores;
-          var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
-          text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
-          ctx.fillText(emotionMapping[text], left, top);
-          top += 1.3 * fs;
+            var text = age + " anni, ";// +
+            ctx.fillText(text, left, top);
+            top += 1.3 * fs;
 
-          text = (facialHair.beard >= 0.2 ? "barba " : "") +
-            (facialHair.moustache >= 0.2 ? "baffi " : "");
-          ctx.fillText(text, left, top);
-          top += 1.3 * fs;
+            var scores = element.scores;
+            var max = Math.max.apply(null, Object.keys(scores).map(function (x) { return scores[x] }));
+            text = (Object.keys(scores).filter(function (x) { return scores[x] == max; })[0]);
+            ctx.fillText(emotionMapping[text], left, top);
+            top += 1.3 * fs;
 
-          switch (glasses) {
-            case "noglasses":
-              text = "Non porti gli occhiali";
-              break;
-            case "readingglasses":
-              text = "Occhiali da lettura";
-              break;
-            case "sunglasses":
-              text = "Occhiali da sole";
-              //text="Spacciatore";
-              break;
-            default:
-              text = "";
-          }
-          ctx.fillText(text, left, top);
-          //top+=1.3*fs;
+            text = (facialHair.beard >= 0.2 ? "barba " : "") +
+              (facialHair.moustache >= 0.2 ? "baffi " : "");
+            ctx.fillText(text, left, top);
+            top += 1.3 * fs;
+
+            switch (glasses) {
+              case "noglasses":
+                text = "Non porti gli occhiali";
+                break;
+              case "readingglasses":
+                text = "Occhiali da lettura";
+                break;
+              case "sunglasses":
+                text = "Occhiali da sole";
+                //text="Spacciatore";
+                break;
+              default:
+                text = "";
+            }
+            ctx.fillText(text, left, top);
+            //top+=1.3*fs;
+          });
+
+          setTimeout(() => this.evaluateAge(), 3000);
         });
 
-        setTimeout(() => this.evaluateAge(), 3000);
-      })
+      }else{
+        setTimeout(() => this.evaluateAge(), 1000);
+      }
+
     }
   }
 
@@ -149,7 +155,7 @@ export class PhotoComponent implements OnInit {
             } else {
               this.faces = this.addEmotionToFace(this.faces, emotions);
             }
-            this.log += "" + delay+" "+Object.keys(this.faces).length+" ";
+            this.log += "" + delay + " " + Object.keys(this.faces).length + " ";
             console.log(this.log);
             resolve(this.faces);
           });
