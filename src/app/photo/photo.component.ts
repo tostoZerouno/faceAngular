@@ -43,12 +43,16 @@ export class PhotoComponent implements OnInit {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0);
-      var image = canvas.toDataURL('image/jpeg', 0.3);
+      const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg',0.3)).size;
+      const rapp = 153600/size;
+      //console.log(size*rapp);
+      var image = canvas.toDataURL('image/jpeg', rapp);
 
       this.getAgeFromImage(image).then(imageAge => {
         this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
         const ctx = vCanvas.getContext('2d');
+        ctx
         ctx.strokeStyle = "#FF0000";
         const fs = video.width / 20;
         ctx.font = fs + "px Georgia";
