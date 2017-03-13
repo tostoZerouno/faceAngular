@@ -9,6 +9,7 @@ export class PhotoComponent implements OnInit {
   age = "Clicca sull'immagine per cominciare";
   description = "no description";
   enableCapture = false;
+  log ="";
 
   constructor() { }
 
@@ -130,6 +131,8 @@ export class PhotoComponent implements OnInit {
     video.height = video.width * ratio;
     canvas.height = video.height;
     canvas.width = video.width * 2;
+
+    this.log = video.height+"x"+video.width+" c:"+canvas.height+"x"+canvas.width;
   }
 
   getAgeFromImage(stream) {
@@ -206,6 +209,18 @@ export class PhotoComponent implements OnInit {
   }
 
   ngOnInit() {
+    /*var interval = setInterval(() => {
+      this.onResize()
+      const video = <any>document.getElementsByTagName('video')[0];
+      console.log("gira");
+      if (video.height > 0) {
+        clearInterval(interval);
+        console.log("stop");
+      }
+    }, 100);*/
+  }
+
+  ngAfterViewInit() {
     var interval = setInterval(() => {
       this.onResize()
       const video = <any>document.getElementsByTagName('video')[0];
@@ -215,7 +230,6 @@ export class PhotoComponent implements OnInit {
         console.log("stop");
       }
     }, 100);
-
   }
 
   addEmotionToFace(faces, emotions) {
