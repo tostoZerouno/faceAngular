@@ -108,6 +108,7 @@ export class PhotoComponent implements OnInit {
         });
 
       }else{
+        this.log = "SIZE ZERO";
         setTimeout(() => this.evaluateAge(), 1000);
       }
 
@@ -128,7 +129,7 @@ export class PhotoComponent implements OnInit {
     canvas.height = video.height;
     canvas.width = video.width * 2;
 
-    this.log = video.height + "x" + video.width + " c:" + canvas.height + "x" + canvas.width;
+    //this.log = video.height + "x" + video.width + " c:" + canvas.height + "x" + canvas.width;
   }
 
   analyzeImage(stream) {
