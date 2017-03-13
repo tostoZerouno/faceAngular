@@ -32,9 +32,15 @@ export class PhotoComponent implements OnInit {
 
         this.clearCanvas();
         const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
-        console.log(imageAge[0]);
-        this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " "+
-          imageAge[0].faceRectangle.width;
+        //console.log(imageAge[0]);
+        //imageAge[0] = {};
+        if (Object.keys(imageAge[0]).length > 0) {
+          this.log = video.height + "x" + video.width + " c:" + vCanvas.height + "x" + vCanvas.width + " " +
+            imageAge[0].faceRectangle.width;
+        } else {
+          this.log = "no rectangles.....";
+        }
+
         const ctx = vCanvas.getContext('2d');
         //ctx
         ctx.strokeStyle = "#FF0000";
@@ -170,11 +176,15 @@ export class PhotoComponent implements OnInit {
         xhrface.setRequestHeader('Ocp-Apim-Subscription-Key', "6e2715cbea564f4f95f9a097e935e8c7");
 
         xhrface.onreadystatechange = function () {
-          if (xhrface.status == 200) {
-            var resp = JSON.parse(xhrface.response);
-            resolve(resp);
-          } else {
-            resolve(xhrface.status);
+          if (xhrface.readyState == 4) {
+            if (xhrface.status == 200) {
+              //var resp = JSON.parse(xhrface.response);
+              //console.log(this);
+              var resp = JSON.parse(xhrface.response);
+              resolve(resp);
+            } else {
+              resolve(xhrface.status);
+            }
           }
         }
         xhrface.send(blob);
@@ -190,11 +200,14 @@ export class PhotoComponent implements OnInit {
       xhremotion.setRequestHeader('content-type', 'application/octet-stream');
       xhremotion.setRequestHeader('Ocp-Apim-Subscription-Key', "81f079954302459e904d8c98d06263b1");
       xhremotion.onreadystatechange = function () {
-        if (xhremotion.status == 200) {
-          var resp = JSON.parse(xhremotion.response);
-          resolve(resp);
-        } else {
-          resolve(xhremotion.status);
+        if (xhremotion.readyState == 4) {
+          if (xhremotion.status == 200) {
+            //console.log(this);
+            var resp = JSON.parse(xhremotion.response);
+            resolve(resp);
+          } else {
+            resolve(xhremotion.status);
+          }
         }
       }
       xhremotion.send(blob);
@@ -213,12 +226,15 @@ export class PhotoComponent implements OnInit {
       xhrvision.setRequestHeader('Ocp-Apim-Subscription-Key', "b10fb5b057fe4f9cbeac59dcf0f5727f");
 
       xhrvision.onreadystatechange = function () {
-        if (xhrvision.status == 200) {
-          var resp = JSON.parse(xhrvision.response);
-          console.log(resp.description.captions[0].text);
-          resolve(resp.description.captions);
-        } else {
-          console.log(xhrvision.status);
+        if (xhrvision.readyState == 4) {
+          if (xhrvision.status == 200) {
+            //console.log(this);
+            var resp = JSON.parse(xhrvision.response);
+            console.log(resp.description.captions[0].text);
+            resolve(resp.description.captions);
+          } else {
+            console.log(xhrvision.status);
+          }
         }
       }
       xhrvision.send(blob);
