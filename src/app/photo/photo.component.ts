@@ -24,6 +24,7 @@ export class PhotoComponent implements OnInit {
       canvas.getContext('2d').drawImage(video, 0, 0);
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
       const rapp = 153600 / size;
+      this.log = size+" "+rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
 
@@ -148,7 +149,7 @@ export class PhotoComponent implements OnInit {
             } else {
               this.faces = this.addEmotionToFace(this.faces, emotions);
             }
-            this.log = "" + delay+" "+Object.keys(this.faces).length;
+            this.log += "" + delay+" "+Object.keys(this.faces).length+" ";
             console.log(this.log);
             resolve(this.faces);
           });
