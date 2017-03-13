@@ -32,6 +32,10 @@ export class PhotoComponent implements OnInit {
       this.log = size + " " + rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
+      const testCanvas = <any>document.getElementById('testCanvas');
+      var img = new Image;
+      img.src = image;
+      testCanvas.getContext('2d').drawImage(img, 0, 0);
 
       if (size > 0) {
         this.analyzeImage(image).then(imageAge => {
@@ -85,7 +89,7 @@ export class PhotoComponent implements OnInit {
               if (name === SIRE) {
                 age = "Senza Età";
                 scores.libero = 1000;
-                name  = "Mio Sire"
+                name = "Mio Sire"
               }
 
               const rect = element.faceRectangle;
@@ -94,9 +98,9 @@ export class PhotoComponent implements OnInit {
               ctx.strokeRect(rect.left / resize, rect.top / resize, rect.width / resize, rect.height / resize);
 
               var text;
-              if(isNaN(age)){
-                text=age;
-              }else{
+              if (isNaN(age)) {
+                text = age;
+              } else {
                 text = age + " anni, "
               }
               //var text = age + " anni, ";// +
@@ -143,7 +147,7 @@ export class PhotoComponent implements OnInit {
           });
 
           setTimeout(() => this.evaluateAge(), 3000);
-        },(error)=>{
+        }, (error) => {
           setTimeout(() => this.evaluateAge(), 3000);
 
         });
@@ -170,6 +174,11 @@ export class PhotoComponent implements OnInit {
     canvas.height = video.height;
     canvas.width = video.width * 2;
 
+
+    const tCanvas = <any>document.getElementById('testCanvas');
+    tCanvas.width = video.width;
+    tCanvas.height = video.height;
+
     //this.log = video.height + "x" + video.width + " c:" + canvas.height + "x" + canvas.width;
   }
 
@@ -188,7 +197,7 @@ export class PhotoComponent implements OnInit {
           this.faces = faces;
           delay = 0;
           //resolve(faces);
-        },(error)=>{
+        }, (error) => {
           console.log(error);
         });
 
@@ -204,9 +213,9 @@ export class PhotoComponent implements OnInit {
             }
             this.log += "" + delay + " " + Object.keys(this.faces).length + " ";
             console.log(this.log);
-            
-          },(error)=>{
-             console.log(error);
+
+          }, (error) => {
+            console.log(error);
           });
         }, delay);
 
