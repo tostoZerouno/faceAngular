@@ -23,25 +23,29 @@ export class PhotoComponent implements OnInit {
     if (this.enableCapture) {
       var faceIds = [];
       const video = <any>document.getElementsByTagName('video')[0];
-      component.log="video";
+      this.log="video";
       const canvas = <any>document.getElementsByName('canvas')[0];
-      component.log+="->canvas";
+      this.log+="->canvas";
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      component.log+="->sizes";
+      this.log+="->sizes";
       canvas.getContext('2d').drawImage(video, 0, 0);
-      component.log+="->context";
+      this.log+="->context";
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
-      component.log+="->size";
+      this.log+="->size";
       const rapp = 153600 / size;
-      component.log+="->rapp";
+      this.log+="->rapp";
       this.log += size + " " + rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
       const testCanvas = <any>document.getElementById('testCanvas');
       var img = new Image;
       img.src = image;
-      testCanvas.getContext('2d').drawImage(img, 0, 0);
+      img.onload = function(){
+        testCanvas.getContext('2d').drawImage(img, 0, 0);
+      }
+      
+      component.log+="->draw";
 
       if (size > 0) {
         this.analyzeImage(image).then(imageAge => {
