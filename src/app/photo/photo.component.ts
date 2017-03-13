@@ -148,8 +148,8 @@ export class PhotoComponent implements OnInit {
             } else {
               this.faces = this.addEmotionToFace(this.faces, emotions);
             }
-            this.log = "" + delay;
-            console.log(this.faces);
+            this.log = "" + delay+" "+Object.keys(this.faces).length;
+            console.log(this.log);
             resolve(this.faces);
           });
         }, delay);
