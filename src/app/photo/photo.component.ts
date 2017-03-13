@@ -23,13 +23,19 @@ export class PhotoComponent implements OnInit {
     if (this.enableCapture) {
       var faceIds = [];
       const video = <any>document.getElementsByTagName('video')[0];
+      component.log="video";
       const canvas = <any>document.getElementsByName('canvas')[0];
+      component.log+="->canvas";
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+      component.log+="->sizes";
       canvas.getContext('2d').drawImage(video, 0, 0);
+      component.log+="->context";
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
+      component.log+="->size";
       const rapp = 153600 / size;
-      this.log = size + " " + rapp;
+      component.log+="->rapp";
+      this.log += size + " " + rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
       const testCanvas = <any>document.getElementById('testCanvas');
