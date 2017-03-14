@@ -58,6 +58,8 @@ export class VideoComponent implements OnInit {
 
   startStream(constraints) {
     let _video = this.video.nativeElement;
+    /*let nav = <any>navigator;
+    nav.getUserMedia = nav.getUserMedia || nav.mozGetUserMedia || nav.webkit.GetUserMedia;*/
     //if(navigator.mozGetUserMedia)
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia(constraints)

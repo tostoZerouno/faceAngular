@@ -43,6 +43,7 @@ export class PhotoComponent implements OnInit {
       img.src = image;
       img.onload = function(){
         testCanvas.getContext('2d').drawImage(img, 0, 0);
+        component.log= ""+window.orientation;
       }
       
       component.log+="->draw";
