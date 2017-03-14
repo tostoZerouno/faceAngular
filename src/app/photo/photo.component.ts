@@ -31,14 +31,14 @@ export class PhotoComponent implements OnInit {
       this.log += "->sizes";
       var context = canvas.getContext('2d');
       //canvas.getContext('2d').drawImage(video, 0, 0);
-      if (window.orientation != null) {
+      if (this.detectmob()) {
         //var deg = Number(window.orientation);
         context.save();
         context.scale(1, -1);
-        context.drawImage(video, 0, 0,canvas.width,-1*canvas.height);
+        context.drawImage(video, 0, 0, canvas.width, -1 * canvas.height);
         context.restore();
 
-      }else{
+      } else {
         context.drawImage(video, 0, 0);
       }
       this.log += "->context";
@@ -486,6 +486,22 @@ export class PhotoComponent implements OnInit {
       xhrface.send();
     });
 
+  }
+
+  detectmob() {
+    if (navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgent.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)
+    ) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
 }
