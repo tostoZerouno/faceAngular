@@ -23,38 +23,45 @@ export class PhotoComponent implements OnInit {
     if (this.enableCapture) {
       var faceIds = [];
       const video = <any>document.getElementsByTagName('video')[0];
-      this.log="video";
+      this.log = "video";
       const canvas = <any>document.getElementsByName('canvas')[0];
-      this.log+="->canvas";
+      this.log += "->canvas";
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      this.log+="->sizes";
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      if(window.orientation!=null){
-        var deg = Number(window.orientation);
-        canvas.getContext('2d').rotate(Math.PI/180*(180+deg));
+      this.log += "->sizes";
+      var context = canvas.getContext('2d');
+      //canvas.getContext('2d').drawImage(video, 0, 0);
+      if (window.orientation != null) {
+        //var deg = Number(window.orientation);
+        context.save();
+        context.scale(1, -1);
+        context.drawImage(video, 0, 0,canvas.width,-1*canvas.height);
+        context.restore();
+
+      }else{
+        context.drawImage(video, 0, 0);
       }
-      this.log+="->context";
+      this.log += "->context";
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
-      this.log+="->size";
+      this.log += "->size";
       const rapp = 153600 / size;
-      this.log+="->rapp";
+      this.log += "->rapp";
       this.log += size + " " + rapp;
       //console.log(size*rapp);
       var image = canvas.toDataURL('image/jpeg', rapp);
       const testCanvas = <any>document.getElementById('testCanvas');
       var img = new Image;
       img.src = image;
-      img.onload = function(){
+      img.onload = function () {
         testCanvas.getContext('2d').drawImage(img, 0, 0);
         //component.log= ""+window.orientation;
       }
-      
-      component.log+="->draw";
+
+      component.log += "->draw";
 
       if (size > 0) {
         this.analyzeImage(image).then(imageAge => {
-          component.log+="->ANALYZED";
+          component.log += "->ANALYZED";
           this.clearCanvas();
           const vCanvas = <any>document.getElementsByName('videoCanvas')[0];
           if (Object.keys(imageAge[0]).length > 0) {
