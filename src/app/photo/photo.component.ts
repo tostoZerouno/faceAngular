@@ -30,6 +30,10 @@ export class PhotoComponent implements OnInit {
       canvas.height = video.videoHeight;
       this.log+="->sizes";
       canvas.getContext('2d').drawImage(video, 0, 0);
+      if(window.orientation!=null){
+        var deg = Number(window.orientation);
+        canvas.getContext('2d').rotate(Math.PI/180*(180+deg));
+      }
       this.log+="->context";
       const size = this.dataURItoBlob(canvas.toDataURL('image/jpeg', 1)).size;
       this.log+="->size";
@@ -43,7 +47,7 @@ export class PhotoComponent implements OnInit {
       img.src = image;
       img.onload = function(){
         testCanvas.getContext('2d').drawImage(img, 0, 0);
-        component.log= ""+window.orientation;
+        //component.log= ""+window.orientation;
       }
       
       component.log+="->draw";
