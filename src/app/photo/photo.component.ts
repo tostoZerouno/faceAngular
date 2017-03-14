@@ -186,8 +186,8 @@ export class PhotoComponent implements OnInit {
 
 
     const tCanvas = <any>document.getElementById('testCanvas');
-    tCanvas.width = video.width;
-    tCanvas.height = video.height;
+    tCanvas.width = video.videoWidth;
+    tCanvas.height = video.videoHeight;
 
     //this.log = video.height + "x" + video.width + " c:" + canvas.height + "x" + canvas.width;
   }
